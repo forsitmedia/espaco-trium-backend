@@ -154,7 +154,7 @@
       const payload = Object.fromEntries(formData.entries());
 
       try {
-        const res = await fetch('http://localhost:3000/reserve', {
+        const res = await fetch('https://espaco-trium-backend.onrender.com/reserve', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
