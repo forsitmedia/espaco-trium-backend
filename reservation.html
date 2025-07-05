@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Reservation | Espaço Trium</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Litepicker CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
+  <!-- Litepicker JS -->
+  <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+
+  <style>
+    .hidden { display: none; }
+    .form-step { margin-bottom: 2rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    select, input, textarea { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
+    button { padding: 0.75rem 2rem; background: #a16741; color: white; border: none; cursor: pointer; }
+    button:hover { background: #8a5635; }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Espaço Trium</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="reservation.html" class="active">Reservations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="reservation-section">
+    <div class="container">
+      <h1>Reserve a Table</h1>
+      <form id="reservation-form">
+        <div class="form-step">
+          <label for="date-picker">1. Choose a Date:</label>
+          <input type="text" name="date" id="date-picker" required placeholder="Select a date" readonly>
+        </div>
+
+        <div class="form-step">
+          <label for="time">2. Choose a Time:</label>
+          <select name="time" id="time" required></select>
+        </div>
+
+        <div class="form-step">
+          <label for="guests">3. Number of Guests:</label>
+          <select name="guests" id="guests" required>
+            <option value="">Select guests</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+          </select>
+        </div>
+
+        <div class="form-step">
+          <label for="name">Your Name:</label>
+          <input type="text" name="name" id="name" required>
+
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" required>
+
+          <label for="phone">Phone:</label>
+          <input type="tel" name="phone" id="phone" required>
+
+          <label for="seating">Seating Preference:</label>
+          <select name="seating" id="seating" required>
+            <option value="">Select seating</option>
+            <option value="inside">Inside</option>
+            <option value="outside">Outside</option>
+          </select>
+
+          <label for="message">Special Requests (optional):</label>
+          <textarea name="message" id="message"></textarea>
+        </div>
+
+        <button type="submit">Confirm Reservation</button>
+        <p id="response-message"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Espaço Trium</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('reservation-form');
+    const timeSelect = document.getElementById('time');
+    const message = document.getElementById('response-message');
+    const dateInput = document.getElementById('date-picker');
+
+    const lunchTimes = ["12:00", "12:30", "13:00", "13:30"];
+    const dinnerTimes = ["19:00", "19:30", "20:00", "20:30"];
+
+    function updateTimeOptions() {
+      const selectedDate = new Date(dateInput.value);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const isToday = selectedDate.getTime() === today.getTime();
+      const now = new Date();
+
+      timeSelect.innerHTML = '<option value="">Select a time</option>';
+
+      if (!dateInput.value) return;
+
+      function addOptions(label, times) {
+        const group = document.createElement('optgroup');
+        group.label = label;
+        times.forEach(t => {
+          const [h, m] = t.split(":").map(Number);
+          const timeDate = new Date(selectedDate);
+          timeDate.setHours(h, m);
+
+          if (!isToday || timeDate > now) {
+            const option = document.createElement('option');
+            option.value = t;
+            option.textContent = t;
+            group.appendChild(option);
+          }
+        });
+        if (group.children.length > 0) timeSelect.appendChild(group);
+      }
+
+      addOptions("Lunch", lunchTimes);
+      addOptions("Dinner", dinnerTimes);
+    }
+
+    const picker = new Litepicker({
+      element: document.getElementById('date-picker'),
+      format: 'YYYY-MM-DD',
+      minDate: new Date(),
+      setup: (picker) => {
+        picker.on('selected', (date) => {
+          dateInput.value = date.format('YYYY-MM-DD');
+          updateTimeOptions();
+        });
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('http://localhost:3000/reserve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          message.style.color = 'green';
+          message.textContent = data.message || "Reservation confirmed!";
+          form.reset();
+          timeSelect.innerHTML = '';
+        } else {
+          message.style.color = 'red';
+          message.textContent = data.error || "Something went wrong.";
+        }
+      } catch (err) {
+        message.style.color = 'red';
+        message.textContent = "Server error. Please try again later.";
+      }
+    });
+  </script>
+</body>
+</html>
