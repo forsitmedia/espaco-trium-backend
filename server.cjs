@@ -5,11 +5,9 @@ const { createClient } = require("@supabase/supabase-js");
 const { Resend } = require("resend");
 const dotenv = require("dotenv");
 const dayjs = require("dayjs");
+const path = require("path");
 
 dotenv.config();
-
-const path = require("path");
-const __dirname = path.resolve(); // simplified __dirname setup
 
 const app = express();
 const port = 3000;
@@ -26,7 +24,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Restaurant email
-const restaurantEmail = process.env.RESTAURANT_EMAIL;
+const restaurantEmail = "forsitmedia@gmail.com";
 
 // Reservation endpoint
 app.post("/reserve", async (req, res) => {
@@ -67,7 +65,7 @@ app.post("/reserve", async (req, res) => {
 
   const guestEmail = {
     from: "onboarding@resend.dev",
-    to: email,
+    to: email, // ← sent to user input
     subject: isPortuguese ? "Confirmação de Reserva" : "Reservation Confirmation",
     html: `
       <div style="font-family: sans-serif; font-size: 16px;">
@@ -90,7 +88,7 @@ app.post("/reserve", async (req, res) => {
 
   const restaurantEmailContent = {
     from: "onboarding@resend.dev",
-    to: "forsitmedia@gmail.com",
+    to: restaurantEmail,
     subject: "📥 New Reservation Received",
     html: `
       <div style="font-family: sans-serif; font-size: 16px;">
