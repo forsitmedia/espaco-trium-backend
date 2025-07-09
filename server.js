@@ -1,57 +1,47 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-import { createClient } from "@supabase/supabase-js";
-import { Resend } from "resend";
-import dotenv from "dotenv";
-import dayjs from "dayjs"; // for date formatting
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const { createClient } = require("@supabase/supabase-js");
+const { Resend } = require("resend");
+const dotenv = require("dotenv");
+const dayjs = require("dayjs");
+
 dotenv.config();
 
-// Setup __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const path = require("path");
+const __dirname = path.resolve(); // simplified __dirname setup
 
-// Express setup
 const app = express();
 const port = 3000;
+
 app.use(express.static(__dirname));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Supabase
-const supabaseUrl = "https://xgyovlsyghgjzpwtcsay.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhneW92bHN5Z2hnanpwd3Rjc2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzOTczNDEsImV4cCI6MjA2Njk3MzM0MX0.KFyvvHXhOb9uTsvI69VG-fy0HJVNjSy1IFuAmAByRxI";
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Resend
-const resend = new Resend("re_X27pyMyq_APst9jGaKQmCppMaUCT9TKC1");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Restaurant email
-const restaurantEmail = "yourrestaurant@email.com"; // change this
+const restaurantEmail = process.env.RESTAURANT_EMAIL;
 
 // Reservation endpoint
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
-  // Check existing reservations
   const { data: existing, error: checkError } = await supabase
     .from("reservations")
     .select("*")
     .eq("date", date)
     .eq("time", time);
 
-  if (checkError) {
-    return res.status(500).json({ error: "Error checking reservation availability." });
-  }
-
-  if (existing && existing.length > 0) {
+  if (checkError) return res.status(500).json({ error: "Error checking reservation availability." });
+  if (existing && existing.length > 0)
     return res.status(400).json({ error: "Sorry, that time slot is already booked." });
-  }
 
-  // Save reservation
   const { error } = await supabase.from("reservations").insert([
     {
       name,
@@ -65,18 +55,14 @@ app.post("/reserve", async (req, res) => {
     },
   ]);
 
-  if (error) {
-    return res.status(500).json({ error: "Something went wrong. Please try again." });
-  }
+  if (error) return res.status(500).json({ error: "Something went wrong. Please try again." });
 
-  // Generate calendar link
   const start = dayjs(`${date}T${time}`);
   const end = start.add(2, "hour");
   const formattedStart = start.format("YYYYMMDDTHHmmss");
   const formattedEnd = end.format("YYYYMMDDTHHmmss");
   const calendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=Reservation+at+Espaco+Trium&dates=${formattedStart}/${formattedEnd}&details=Reservation+for+${guests}+people+with+${name}&location=Espaco+Trium,+Cascais`;
 
-  // Simple language fallback
   const isPortuguese = email.endsWith(".pt") || seating === "fora";
 
   const guestEmail = {
@@ -104,7 +90,7 @@ app.post("/reserve", async (req, res) => {
 
   const restaurantEmailContent = {
     from: "onboarding@resend.dev",
-    to: restaurantEmail,
+    to: "forsitmedia@gmail.com",
     subject: "📥 New Reservation Received",
     html: `
       <div style="font-family: sans-serif; font-size: 16px;">
@@ -122,7 +108,6 @@ app.post("/reserve", async (req, res) => {
     `,
   };
 
-  // Send emails
   try {
     await resend.emails.send(guestEmail);
     await resend.emails.send(restaurantEmailContent);
