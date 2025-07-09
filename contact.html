@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-text-pt="Contactos | Espaço Trium" data-text-en="Contact | Espaço Trium">Contactos | Espaço Trium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* RESET + BASE */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      padding-top: 72px;
+      background: #fffaf5;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1200;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      /* CRITICAL FIX: Removed justify-content: space-between; */
+      align-items: center;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid rgba(140, 79, 48, 0.08);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #8c4f30;
+      margin-right: 2rem; /* CRITICAL FIX: Added margin-right for spacing */
+    }
+
+    /* Language Switcher Styles - FIXED TO MATCH GALLERY.HTML */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem; /* CRITICAL FIX: Increased gap */
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-left: auto; /* Push it to the right */
+    }
+
+    .language-switcher span {
+      color: #8c4f30;
+      cursor: pointer;
+      padding: 0.1rem 0.5rem; /* CRITICAL FIX: Increased padding */
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .language-switcher span.active {
+      background: #8c4f30;
+      color: #fff;
+    }
+
+    .language-switcher span:hover:not(.active) {
+      background: rgba(140, 79, 48, 0.1);
+      color: #8c4f30;
+    }
+
+    /* --- MENU TOGGLE & DROPDOWN MENU (existing styles) --- */
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: #8c4f30;
+      /* margin-left: auto; is now handled implicitly by the language-switcher's auto-margin pushing it */
+    }
+
+    .menu-toggle .bar {
+      width: 28px;
+      height: 3px;
+      margin: 4px 0;
+      background: #8c4f30;
+      border-radius: 2px;
+      transition: 0.4s;
+    }
+
+    .menu-toggle.open .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.open .bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .dropdown-menu {
+      position: fixed;
+      top: -100vh;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: #8c4f30;
+      color: #fff;
+      transition: top 0.4s cubic-bezier(.77,0,.18,1);
+      z-index: 1000;
+      padding-top: 80px;
+    }
+
+    .dropdown-menu.open {
+      top: 0;
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      padding: 0 2rem;
+    }
+
+    .dropdown-menu li {
+      margin: 1.5rem 0;
+    }
+
+    .dropdown-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: 500;
+      display: block;
+      transition: color 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      color: #ffe0c2;
+    }
+
+    /* Sub-menu styles for "More Languages" - RE-ADDED */
+    .dropdown-menu ul li.has-submenu {
+      position: relative;
+    }
+
+    .dropdown-menu .sub-menu {
+      list-style: none;
+      padding: 0;
+      margin-top: 0.5rem;
+      margin-left: 1.5rem; /* Indent sub-menu further */
+      max-height: 0; /* Initially hidden */
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      background: rgba(0, 0, 0, 0.2); /* Slightly darker background for sub-menu */
+      border-radius: 5px;
+    }
+
+    .dropdown-menu .sub-menu.open-sub-menu {
+      max-height: 500px; /* Sufficient height to show all items */
+      transition: max-height 0.6s ease-in;
+    }
+
+    .dropdown-menu .sub-menu li {
+      margin: 0.5rem 0; /* Smaller margin for sub-menu items */
+    }
+
+    .dropdown-menu .sub-menu a {
+      font-size: 1.1rem; /* Slightly smaller font for sub-menu items */
+      padding: 0.5rem 1rem; /* Padding for click area */
+      display: block;
+    }
+
+    .dropdown-menu .sub-menu a:hover {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+    /* CONTENT STYLING */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .intro h2 {
+      font-size: 1.6rem;
+      color: #8c4f30;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro h3 {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    .intro p {
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .intro a {
+      text-decoration: none;
+    }
+
+    footer {
+      background: #8c4f30;
+      color: #fff;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .scroll-dot {
+      position: fixed;
+      top: 80px;
+      right: 8px;
+      width: 6px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      border-radius: 20px;
+      z-index: 999;
+      transition: top 0.2s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">Espaço Trium</div>
+  <div class="language-switcher">
+    <span class="lang-option active" data-lang="pt">PT</span>
+    <span class="lang-option" data-lang="en">EN</span>
+  </div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+</header>
+
+<nav class="dropdown-menu" id="dropdownMenu">
+  <ul>
+    <li><a href="index.html" data-text-pt="Home" data-text-en="Home">Home</a></li>
+    <li><a href="menu.html" data-text-pt="Menu" data-text-en="Menu">Menu</a></li>
+    <li><a href="gallery.html" data-text-pt="Galeria" data-text-en="Gallery">Gallery</a></li>
+    <li><a href="reservation.html" data-text-pt="Reservas" data-text-en="Reservations">Reservations</a></li>
+    <li><a href="contact.html" class="active" data-text-pt="Contactos" data-text-en="Contact">Contact</a></li>
+
+    <li class="has-submenu">
+      <a href="#" class="submenu-toggle" data-text-pt="Mais Idiomas" data-text-en="More Languages">Mais Idiomas</a>
+      <ul class="sub-menu">
+        <li><a href="#" data-lang-code="fr">Français</a></li>
+        <li><a href="#" data-lang-code="de">Deutsch</a></li>
+        <li><a href="#" data-lang-code="es">Español</a></li>
+        <li><a href="#" data-lang-code="it">Italiano</a></li>
+        <li><a href="#" data-lang-code="ru">Русский</a></li>
+        <li><a href="#" data-lang-code="zh">中文</a></li>
+        <li><a href="#" data-lang-code="ja">日本語</a></li>
+        <li><a href="#" data-lang-code="nl">Nederlands</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+<section class="intro">
+  <div class="container">
+    <h2 data-text-pt="📞 Contacte-nos" data-text-en="📞 Contact Us">📞 Contacte-nos</h2>
+    <p data-text-pt="Estamos sempre prontos para responder às suas perguntas ou para ajudar com uma reserva." data-text-en="We are always ready to answer your questions or help with a reservation.">Estamos sempre prontos para responder às suas perguntas ou para ajudar com uma reserva.</p>
+
+    <h3 data-text-pt="Endereço" data-text-en="Address">Endereço</h3>
+    <p data-text-pt="Marina de Cascais, loja 37, 2750-800<br>Cascais, Portugal" data-text-en="Marina de Cascais, shop 37, 2750-800<br>Cascais, Portugal">Marina de Cascais, loja 37, 2750-800<br>Cascais, Portugal</p>
+
+    <h3 data-text-pt="Telefone" data-text-en="Phone">Telefone</h3>
+    <p><a href="tel:+351912345678" style="color:#8c4f30;" data-text-pt="+351 912 345 678" data-text-en="+351 912 345 678">+351 912 345 678</a></p>
+
+    <h3 data-text-pt="Email" data-text-en="Email">Email</h3>
+    <p><a href="mailto:reservas@espacotrium.pt" style="color:#8c4f30;" data-text-pt="reservas@espacotrium.pt" data-text-en="reservations@espacotrium.pt">reservas@espacotrium.pt</a></p>
+
+    <h3 data-text-pt="Horário" data-text-en="Hours">Horário</h3>
+    <p data-text-pt="Segunda a Domingo: 12h00 – 23h00" data-text-en="Monday to Sunday: 12:00 PM – 11:00 PM">Segunda a Domingo: 12h00 – 23h00</p>
+
+    <h3 data-text-pt="Siga-nos" data-text-en="Follow Us">Siga-nos</h3>
+    <p>
+      <a href="https://www.instagram.com/restaurantetrium/" style="color:#8c4f30;" data-text-pt="Instagram" data-text-en="Instagram" target="_blank" rel="noopener noreferrer">Instagram</a> |
+      <a href="https://www.facebook.com/p/Espa%C3%A7o-Trium-100063563204499/" style="color:#8c4f30;" data-text-pt="Facebook" data-text-en="Facebook" target="_blank" rel="noopener noreferrer">Facebook</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p data-text-pt="&copy; 2025 Espaço Trium<br>Website handcrafted with care" data-text-en="&copy; 2025 Espaço Trium<br>Website handcrafted with care">&copy; 2025 Espaço Trium<br>Website handcrafted with care</p>
+</footer>
+
+<div class="scroll-dot" id="scrollDot"></div>
+
+<script>
+  // Existing menu toggle script
+  const menuToggle = document.getElementById('menuToggle');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('open');
+    dropdownMenu.classList.toggle('open');
+  });
+
+  // FIXED: Modified to not close for submenu-toggle, to allow sub-menu to remain open
+  dropdownMenu.querySelectorAll('ul > li > a:not(.submenu-toggle)').forEach(link => {
+    link.addEventListener('click', () => {
+      menuToggle.classList.remove('open');
+      dropdownMenu.classList.remove('open');
+    });
+  });
+
+  // --- Language Switcher Script ---
+  const langOptions = document.querySelectorAll('.lang-option');
+  const elementsToTranslate = document.querySelectorAll('[data-text-pt], [data-text-en]');
+  const htmlTag = document.querySelector('html');
+
+  // Function to set the language
+  function setLanguage(lang) {
+    // Update active class for language options
+    langOptions.forEach(option => {
+      if (option.dataset.lang === lang) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
+
+    // Update text content for translatable elements
+    elementsToTranslate.forEach(element => {
+      const textKey = `data-text-${lang}`;
+      if (element.hasAttribute(textKey)) {
+        element.innerHTML = element.getAttribute(textKey);
+      }
+    });
+
+    // Update the lang attribute of the HTML tag
+    htmlTag.setAttribute('lang', lang);
+
+    // FIXED: Update document title dynamically using data-text attributes
+    const titleElement = document.querySelector('title');
+    if (titleElement) {
+        if (lang === 'pt') {
+            titleElement.textContent = titleElement.getAttribute('data-text-pt') || 'Contactos | Espaço Trium';
+        } else if (lang === 'en') {
+            titleElement.textContent = titleElement.getAttribute('data-text-en') || 'Contact | Espaço Trium';
+        }
+    }
+  }
+
+  // Add event listeners to language options
+  langOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      setLanguage(option.dataset.lang);
+    });
+  });
+
+  // Initialize language on page load (defaults to Portuguese as per html lang="pt")
+  setLanguage('pt'); // Ensure PT is active initially if html lang="pt"
+
+  // --- NEW: Sub-menu toggle script for "More Languages" - RE-ADDED ---
+  const submenuToggle = document.querySelector('.submenu-toggle');
+  const subMenu = document.querySelector('.sub-menu');
+
+  if (submenuToggle && subMenu) {
+    submenuToggle.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default link behavior
+      subMenu.classList.toggle('open-sub-menu');
+    });
+
+    subMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default link behavior
+        const langName = e.target.textContent;
+        const langCode = e.target.dataset.langCode;
+        alert(`You selected: ${langName} (${langCode}). \n\nNote: For this demo, full content translation to this language is not implemented. You would typically link to a specific language version of the page or use a more advanced i18n system.`);
+
+        // Optionally, close both menus after selection
+        subMenu.classList.remove('open-sub-menu');
+        menuToggle.classList.remove('open');
+        dropdownMenu.classList.remove('open');
+      });
+    });
+  }
+</script>
+
+</body>
+</html>

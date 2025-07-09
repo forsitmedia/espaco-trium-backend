@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-text-pt="Espaço Trium" data-text-en="Espaço Trium">Espaço Trium</title>
+  <link rel="stylesheet" href="home.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+
+    /* Hamburger Icon */
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1100;
+      font-size: 2rem;
+      color: #8c4f30;
+      position: static;
+      margin: 0;
+    }
+
+    .menu-toggle .bar {
+      display: block;
+      width: 28px;
+      height: 3px;
+      margin: 4px 0;
+      background: #8c4f30;
+      border-radius: 2px;
+      transition: 0.4s;
+    }
+
+    /* Hamburger to X animation */
+    .menu-toggle.open .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-toggle.open .bar:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.open .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      position: fixed;
+      top: -100vh;
+      left: 0;
+      width: 100%;
+       height: 90vh; /* make it cover full height */
+      background: #8c4f30;
+      color: #fff;
+      transition: top 0.4s cubic-bezier(.77,0,.18,1);
+      z-index: 1000;
+      padding-top: 80px; /* space for navbar */
+      /* Remove box-shadow for a flat look */
+      box-shadow: none;
+    }
+
+    .dropdown-menu.open {
+      top: 0;
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 2rem;
+    }
+
+    .dropdown-menu li {
+      margin: 1.5rem 0;
+    }
+
+    .dropdown-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: 500;
+      display: block;
+      text-align: left;
+      transition: color 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      color: #ffe0c2;
+    }
+
+    /* NAVBAR - FIXED TO MATCH OTHER PAGES LAYOUT */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1200;
+      background: rgba(255, 255, 255, 0.7); /* semi-transparent */
+      backdrop-filter: blur(12px);           /* blur effect */
+      -webkit-backdrop-filter: blur(12px);   /* for Safari */
+      display: flex;
+      /* CRITICAL FIX: Removed justify-content: space-between; */
+      align-items: center;
+      padding: 1.2rem 2rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(140, 79, 48, 0.08); /* optional subtle border */
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #8c4f30;
+      margin-right: 2rem; /* CRITICAL FIX: Added margin-right for spacing */
+    }
+
+    /* Language Switcher Styles - FIXED TO MATCH DESIRED SMALLER SIZE */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem; /* Smaller gap */
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-left: auto; /* Push it to the right */
+    }
+
+    .language-switcher span {
+      color: #8c4f30;
+      cursor: pointer;
+      padding: 0.1rem 0.5rem; /* Smaller padding */
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .language-switcher span.active {
+      background: #8c4f30;
+      color: #fff;
+    }
+
+    .language-switcher span:hover:not(.active) {
+      background: rgba(140, 79, 48, 0.1);
+      color: #8c4f30;
+    }
+
+    /* Sub-menu styles for "More Languages" - ADDED */
+    .dropdown-menu ul li.has-submenu {
+      position: relative;
+    }
+
+    .dropdown-menu .sub-menu {
+      list-style: none;
+      padding: 0;
+      margin-top: 0.5rem;
+      margin-left: 1.5rem; /* Indent sub-menu further */
+      max-height: 0; /* Initially hidden */
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      background: rgba(0, 0, 0, 0.2); /* Slightly darker background for sub-menu */
+      border-radius: 5px;
+    }
+
+    .dropdown-menu .sub-menu.open-sub-menu {
+      max-height: 500px; /* Sufficient height to show all items */
+      transition: max-height 0.6s ease-in;
+    }
+
+    .dropdown-menu .sub-menu li {
+      margin: 0.5rem 0; /* Smaller margin for sub-menu items */
+    }
+
+    .dropdown-menu .sub-menu a {
+      font-size: 1.1rem; /* Slightly smaller font for sub-menu items */
+      padding: 0.5rem 1rem; /* Padding for click area */
+      display: block;
+    }
+
+    .dropdown-menu .sub-menu a:hover {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -260px;
+      width: 220px;
+      height: 100%;
+      background: #8c4f30;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 2rem 1.2rem;
+      transition: right 0.3s ease;
+      z-index: 1000;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
+
+    .close-btn {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 2rem;
+    }
+
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+
+    .side-menu li {
+      margin: 1rem 0;
+    }
+
+    .side-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      width: 100%;
+      display: block;
+      padding: 0.5rem 0;
+      transition: background 0.2s;
+    }
+
+    .side-menu a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #fff;
+    }
+
+    .hero-text h1 {
+      font-size: 2rem;         /* or adjust to your preference */
+      font-weight: 700;
+      color: hwb(30 78% 22% / 0.574);
+      text-shadow: none;       /* removes any shadow */
+      margin-bottom: 0.5rem;
+      margin-top: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .hero-text p {
+      color: #fff;
+    }
+
+    /* Video Background */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    #bg-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #8c4f30;
+      color: #fff;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      /* Remove box-shadow for subtlety */
+      box-shadow: none;
+      opacity: 0.95;
+    }
+    .cta-button:hover {
+      background-color: #a05a38;
+    }
+
+    /* About Section */
+    .intro {
+      background: #fffaf5; /* same tone as the rest of the page */
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-size: 1.6rem;
+      color: #8c4f30;
+      margin-bottom: 0.3rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .intro h2::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background-color: #8c4f30;
+      margin: 0.4rem auto 0;
+      border-radius: 2px;
+    }
+
+    .intro p {
+      font-size: 1rem;
+      color: #444;
+      max-width: 620px;
+      margin: 1.2rem auto 0;
+      line-height: 1.5;
+      background: none;      /* no background */
+      box-shadow: none;      /* no shadow */
+      border: none;          /* no border */
+      padding: 0;            /* no padding */
+    }
+
+    /* Fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    /* Footer */
+    footer {
+      background: #8c4f30;
+      color: #fff;
+      text-align: center;
+      padding: 2rem 0;
+      position: relative;
+      z-index: 100;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    body {
+      padding-top: 72px; /* Adjust to your navbar height */
+    }
+    .intro,
+    .intro .fade-in,
+    .intro p {
+      background: none !important;
+      box-shadow: none !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 auto !important;
+      max-width: 620px;
+      border-radius: 0 !important;
+    }
+
+    .intro {
+      padding: 3.5rem 1.5rem !important;
+    }
+
+    /* Scroll Progress Indicator */
+    .scroll-indicator-container {
+      position: fixed;
+      right: 0.75rem;
+      top: 1rem;
+      bottom: 1rem;
+      width: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 8px;
+      z-index: 900;
+    }
+    /* MINI SCROLL TRACKER */
+    .scroll-dot {
+      position: fixed;
+      top: 80px;
+      right: 8px;
+      width: 6px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 20px;
+      z-index: 999;
+      transition: top 0.2s ease-out;
+    }
+
+
+    .opening-hours {
+      background: #fffaf5;
+      text-align: center;
+      padding: 1rem 1.5rem;
+      margin-top: 0;
+    }
+
+    .opening-hours h2 {
+      font-size: 1.6rem;
+      color: #8c4f30;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .opening-hours h2 .light {
+      color: #9999999e;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+
+    .underline {
+      width: 50px;
+      height: 3px;
+      background: #8c4f30;
+      margin: 0 auto 2rem;
+      border-radius: 2px;
+    }
+
+    .hours-table {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .hours-table div {
+      display: flex;
+      justify-content: space-between;
+      width: 250px;
+      font-size: 1.1rem;
+    }
+
+    .hours-table div span {
+      color: #070303;
+    }
+
+    .divider-image {
+      width: 100%;
+      margin: 0.5rem 0 3rem 0; /* Corrected margin for consistency */
+      text-align: center;
+    }
+
+    .divider-image img {
+      width: 100%;
+      max-height: 170px;
+      object-fit: cover;
+      opacity: 0.9;
+      border-radius: 4px;
+    }
+
+    /* COMPACT SERVICES SECTION */
+    .services-section {
+      position: relative;
+      background: url('images/services-bg.jpg') no-repeat center center/cover;
+      padding: 2rem 1rem; /* Less vertical padding */
+      text-align: center;
+      color: white;
+    }
+
+    .services-overlay {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1.5rem;
+      border-radius: 10px;
+    }
+
+    .services-section h2 {
+      font-size: 1.5rem; /* Smaller title */
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .services-section .light {
+      font-weight: 600;
+      color: #ccc;
+      font-size: 1.1rem;
+    }
+
+    /* The .underline rule is duplicated, kept the one outside services-section */
+
+    /* Smaller grid with tighter spacing */
+    .services-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+    }
+
+    /* Smaller icon bubble */
+    .service-icon {
+      background: white;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .service-icon:hover {
+      transform: scale(1.05);
+    }
+
+    .service-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 50%;
+      transform: scale(1.7) translateY(15%); /* Zoom in */
+    }
+
+
+    .service-icon p {
+      font-size: 0.5rem;
+      margin: 0;
+      margin-top: 1.9rem;
+      color: #fffdfb ;        /* Font color (adjust as needed) */
+      font-weight: 800;   /* Use 400 = normal, 500 = medium, 700 = bold */
+    }
+
+    .map-embed {
+      margin-top: 2rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .map-section h2 {
+      font-size: 1.6rem; /* Corrected size */
+      color: #8c4f30;
+      font-weight: 600;
+      margin-bottom: 0.5rem; /* Corrected margin */
+      line-height: 1.2;
+      text-align: center;
+    }
+
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">Espaço Trium</div>
+  <div class="language-switcher">
+    <span class="lang-option active" data-lang="pt">PT</span>
+    <span class="lang-option" data-lang="en">EN</span>
+  </div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+</header>
+
+<nav class="side-menu" id="sideMenu">
+  <button class="close-btn" id="closeMenu">×</button>
+  <ul>
+    <li><a href="index.html" class="active" data-text-pt="Home" data-text-en="Home">Home</a></li>
+    <li><a href="menu.html" data-text-pt="Menu" data-text-en="Menu">Menu</a></li>
+    <li><a href="gallery.html" data-text-pt="Galeria" data-text-en="Gallery">Gallery</a></li>
+    <li><a href="reservation.html" data-text-pt="Reservas" data-text-en="Reservations">Reservations</a></li>
+    <li><a href="contact.html" data-text-pt="Contactos" data-text-en="Contact">Contact</a></li>
+  </ul>
+</nav>
+
+<nav class="dropdown-menu" id="dropdownMenu">
+  <ul>
+    <li><a href="index.html" class="active" data-text-pt="Home" data-text-en="Home">Home</a></li>
+    <li><a href="menu.html" data-text-pt="Menu" data-text-en="Menu">Menu</a></li>
+    <li><a href="gallery.html" data-text-pt="Galeria" data-text-en="Gallery">Gallery</a></li>
+    <li><a href="reservation.html" data-text-pt="Reservas" data-text-en="Reservations">Reservations</a></li>
+    <li><a href="contact.html" data-text-pt="Contactos" data-text-en="Contact">Contact</a></li>
+
+    <li class="has-submenu">
+      <a href="#" class="submenu-toggle" data-text-pt="Mais Idiomas" data-text-en="More Languages">Mais Idiomas</a>
+      <ul class="sub-menu">
+        <li><a href="#" data-lang-code="fr">Français</a></li>
+        <li><a href="#" data-lang-code="de">Deutsch</a></li>
+        <li><a href="#" data-lang-code="es">Español</a></li>
+        <li><a href="#" data-lang-code="it">Italiano</a></li>
+        <li><a href="#" data-lang-code="ru">Русский</a></li>
+        <li><a href="#" data-lang-code="zh">中文</a></li>
+        <li><a href="#" data-lang-code="ja">日本語</a></li>
+        <li><a href="#" data-lang-code="nl">Nederlands</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+  <div class="hero">
+    <video autoplay muted loop playsinline id="bg-video">
+      <source src="images/trium.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-text">
+      <h1 data-text-pt="Bem-vindo ao Espaço Trium" data-text-en="Welcome to Espaço Trium">Welcome to Espaço Trium</h1>
+      <p data-text-pt="Onde a tradição encontra o sabor no coração de Cascais" data-text-en="Where tradition meets taste in the heart of Cascais">Where tradition meets taste in the heart of Cascais</p>
+    </div>
+    <a href="reservation.html" class="cta-button" data-text-pt="Reserve uma Mesa Agora" data-text-en="Reserve a Table Now">Reserve a Table Now</a>
+  </div>
+
+  <section class="intro" id="about">
+  <div class="fade-in">
+    <h2 data-text-pt="Sobre Nós" data-text-en="About Us">About Us</h2>
+    <p data-text-pt="Situado perto do Atlântico, o Espaço Trium é mais do que um restaurante — é uma experiência. Projetado para ser acolhedor, elegante e tranquilo, o nosso espaço oferece os mariscos mais frescos, sabores locais e uma atmosfera acolhedora para todas as ocasiões." data-text-en="Nestled near the Atlantic, Espaço Trium is more than a restaurant — it's an experience. Designed to be warm, elegant, and peaceful, our space offers the freshest seafood, local flavors, and a cozy atmosphere for every occasion.">
+      Nestled near the Atlantic, Espaço Trium is more than a restaurant — it's an experience.
+      Designed to be warm, elegant, and peaceful, our space offers the freshest seafood,
+      local flavors, and a cozy atmosphere for every occasion.
+    </p>
+  </div>
+</section>
+
+<div class="divider-image">
+  <img src="images/f18.JPG" alt="divider line" />
+</div>
+
+<section class="opening-hours">
+  <div class="fade-in">
+    <h2 data-text-pt="<span class='light'>Nosso</span><br><strong>Horário de Funcionamento</strong>" data-text-en="<span class='light'>Our</span><br><strong>Opening Hours</strong>"><span class="light">Our</span><br><strong>Opening Hours</strong></h2>
+    <hr class="underline" />
+    <div class="hours-table">
+      <div data-text-pt="<strong>Segunda</strong><span>09:00 – 21:00</span>" data-text-en="<strong>Monday</strong><span>09:00 – 21:00</span>"><strong>Monday</strong><span>09:00 – 21:00</span></div>
+      <div data-text-pt="<strong>Terça</strong><span>Fechado</span>" data-text-en="<strong>Tuesday</strong><span>Closed</span>"><strong>Tuesday</strong><span>Closed</span></div>
+      <div data-text-pt="<strong>Quarta</strong><span>09:00 – 21:00</span>" data-text-en="<strong>Wednesday</strong><span>09:00 – 21:00</span>"><strong>Wednesday</strong><span>09:00 – 21:00</span></div>
+      <div data-text-pt="<strong>Quinta</strong><span>09:00 – 21:00</span>" data-text-en="<strong>Thursday</strong><span>09:00 – 21:00</span>"><strong>Thursday</strong><span>09:00 – 21:00</span></div>
+      <div data-text-pt="<strong>Sexta</strong><span>09:00 – 22:00</span>" data-text-en="<strong>Friday</strong><span>09:00 – 22:00</span>"><strong>Friday</strong><span>09:00 – 22:00</span></div>
+      <div data-text-pt="<strong>Sábado</strong><span>09:00 – 22:00</span>" data-text-en="<strong>Saturday</strong><span>09:00 – 22:00</span>"><strong>Saturday</strong><span>09:00 – 22:00</span></div>
+      <div data-text-pt="<strong>Domingo</strong><span>09:00 – 21:00</span>" data-text-en="<strong>Sunday</strong><span>09:00 – 21:00</span>"><strong>Sunday</strong><span>09:00 – 21:00</span></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="services-section">
+  <div class="services-overlay">
+
+    <h2 data-text-pt="<span class='light'>Nossos</span><br><strong>Serviços</strong>" data-text-en="<span class='light'>Our</span><br><strong>Services</strong>"><span class="light">Our</span><br><strong>Services</strong></h2>
+    <hr class="underline" />
+
+    <div class="services-grid">
+
+      <div class="service-icon">
+        <img src="icons/1.png" alt="Air Conditioning Icon">
+        <p data-text-pt="Ar Condicionado" data-text-en="Air Conditioning">Air Conditioning</p>
+      </div>
+
+      <div class="service-icon">
+        <img src="icons/2.png" alt="Outdoor Seating Icon">
+        <p data-text-pt="Esplanada" data-text-en="Outdoor Seating">Outdoor Seating</p>
+      </div>
+
+      <div class="service-icon">
+        <img src="icons/3.png" alt="Self Parking Icon">
+        <p data-text-pt="Estacionamento Próprio" data-text-en="Self Parking">Self Parking</p>
+      </div>
+
+      <div class="service-icon">
+        <img src="icons/4.png" alt="Private Events Icon">
+        <p data-text-pt="Eventos Privados" data-text-en="Private Events">Private Events</p>
+      </div>
+
+      <div class="service-icon">
+        <img src="icons/5.png" alt="Takeaway Icon">
+        <p data-text-pt="Take Away" data-text-en="Take Away">Take Away</p>
+      </div>
+
+      <div class="service-icon">
+        <img src="icons/6.png" alt="Wi-Fi Icon">
+        <p data-text-pt="Wi-Fi Grátis" data-text-en="Free Wi-Fi">Free Wi-Fi</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="map-section">
+  <h2 data-text-pt="📍 Encontre-nos" data-text-en="📍 Find Us">📍 Find Us</h2>
+  <div class="map-container">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3110.8604135258117!2d-9.423700924017532!3d38.691423071770836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ec429dddf0513%3A0x7dc0b40254bf24b0!2sEspa%C3%A7o%20Trium!5e0!3m2!1sen!2spt!4v1720391711656!5m2!1sen!2spt"
+      width="100%"
+      height="350"
+      style="border:0;"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+</section>
+
+
+  <footer>
+    <p data-text-pt="© 2025 Espaço Trium<br>Website artesanalmente criado com cuidado" data-text-en="© 2025 Espaço Trium<br>Website handcrafted with care">© 2025 Espaço Trium<br>Website handcrafted with care</p>
+  </footer>
+
+  <script>
+  // --- IMPORTANT: Consolidated all scripts into one block ---
+
+  // Existing Menu Toggle (moved to top for robustness)
+  const menuToggle = document.getElementById('menuToggle');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+
+  // Add checks to ensure elements exist before attaching listeners
+  if (menuToggle && dropdownMenu) {
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('open');
+      dropdownMenu.classList.toggle('open');
+    });
+
+    // Modified to not close for submenu-toggle, to allow sub-menu to remain open
+    dropdownMenu.querySelectorAll('ul > li > a:not(.submenu-toggle)').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('open');
+        dropdownMenu.classList.remove('open');
+      });
+    });
+  }
+
+  // --- Language Switcher Script - ADDED ---
+  const langOptions = document.querySelectorAll('.lang-option');
+  const elementsToTranslate = document.querySelectorAll('[data-text-pt], [data-text-en]');
+  const htmlTag = document.querySelector('html');
+
+  function setLanguage(lang) {
+    langOptions.forEach(option => {
+      if (option.dataset.lang === lang) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
+
+    elementsToTranslate.forEach(element => {
+      const textKey = `data-text-${lang}`;
+      if (element.hasAttribute(textKey)) {
+        element.innerHTML = element.getAttribute(textKey);
+      }
+    });
+
+    htmlTag.setAttribute('lang', lang);
+
+    // Update document title dynamically
+    const titleElement = document.querySelector('title');
+    if (titleElement) {
+      if (lang === 'pt') {
+        titleElement.textContent = titleElement.getAttribute('data-text-pt') || 'Espaço Trium';
+      } else if (lang === 'en') {
+        titleElement.textContent = titleElement.getAttribute('data-text-en') || 'Espaço Trium';
+      }
+    }
+  }
+
+  langOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      setLanguage(option.dataset.lang);
+    });
+  });
+
+  // Initialize language on page load
+  setLanguage('pt');
+
+  // --- Sub-menu toggle script for "More Languages" - ADDED ---
+  const submenuToggle = document.querySelector('.submenu-toggle');
+  const subMenu = document.querySelector('.sub-menu');
+
+  if (submenuToggle && subMenu) {
+    submenuToggle.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default link behavior
+      subMenu.classList.toggle('open-sub-menu');
+    });
+
+    subMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default link behavior
+        const langName = e.target.textContent;
+        const langCode = e.target.dataset.langCode;
+        alert(`You selected: ${langName} (${langCode}). \n\nNote: For this demo, full content translation to this language is not implemented. You would typically link to a specific language version of the page or use a more advanced i18n system.`);
+
+        // Optionally, close both menus after selection
+        subMenu.classList.remove('open-sub-menu');
+        menuToggle.classList.remove('open');
+        dropdownMenu.classList.remove('open');
+      });
+    });
+  }
+
+  // --- Existing Scroll Fade-in Animation Script ---
+  const faders = document.querySelectorAll('.fade-in');
+
+  const appearOnScroll = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1
+  });
+
+  faders.forEach(fader => {
+    appearOnScroll.observe(fader);
+  });
+
+  // --- Existing Scroll Dot Indicator Script ---
+  const scrollDot = document.getElementById('scrollDot');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = scrollTop / scrollHeight;
+
+    // Set vertical position based on scroll percent
+    const newTop = 80 + scrollPercent * (window.innerHeight - 160); // stays within screen
+    scrollDot.style.top = `${newTop}px`;
+  });
+</script>
+
+</body>
+</html>

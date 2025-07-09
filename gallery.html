@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galeria | Espaço Trium</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- LightGallery CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/css/lightgallery.min.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #fffaf5;
+      padding-top: 72px;
+      
+    }
+
+    /* ✅ Style for the gallery subtitle under "Nossa Galeria" */
+.gallery-subtitle {
+  font-size: 1.1rem;
+  color: #000000;
+  text-align: center;
+  margin-top: -0.5rem;
+  margin-bottom: 1;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1200;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(140, 79, 48, 0.08);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #8c4f30;
+    }
+/* Language Switcher Styles */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem; /* Space between language options */
+      font-size: 0.9rem;
+      font-weight: bold;
+       /* NEW: Push it to the right */
+  margin-left: auto;
+  /* Removed margin-right: 1rem; from here as auto will handle spacing */
+    }
+
+    .language-switcher span {
+      color: #8c4f30;
+      cursor: pointer;
+      padding: 0.1rem 0.5rem;
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .language-switcher span.active {
+      background: #8c4f30;
+      color: #fff;
+    }
+
+    .language-switcher span:hover:not(.active) {
+      background: rgba(140, 79, 48, 0.1);
+      color: #8c4f30;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1100;
+      font-size: 2rem;
+      color: #8c4f30;
+    }
+
+    .menu-toggle .bar {
+      display: block;
+      width: 28px;
+      height: 3px;
+      margin: 4px 0;
+      background: #8c4f30;
+      border-radius: 2px;
+      transition: 0.4s;
+    }
+
+    .menu-toggle.open .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.open .bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .dropdown-menu {
+      position: fixed;
+      top: -100vh;
+      left: 0;
+      width: 100%;
+      height: 90vh;
+      background: #8c4f30;
+      color: #fff;
+      transition: top 0.4s cubic-bezier(.77,0,.18,1);
+      z-index: 1000;
+      padding-top: 80px;
+    }
+
+    .dropdown-menu.open {
+      top: 0;
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 2rem;
+    }
+
+    .dropdown-menu li {
+      margin: 1.5rem 0;
+    }
+
+    .dropdown-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: 500;
+      display: block;
+      text-align: left;
+      transition: color 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      color: #ffe0c2;
+    }
+
+    /* GALLERY SECTION */
+    .gallery-main {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .gallery-main h2 {
+      font-size: 1.6rem;
+      color: #8c4f30;
+      margin-bottom: 1.5rem;
+    }
+
+    .carousel {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 1rem 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+
+   .carousel-item {
+  flex: 0 0 auto;
+  width: 300px;
+  height: 350px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-right: 16px;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+    footer {
+      background: #8c4f30;
+      color: #fff;
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.9rem;
+    }
+
+/* ✅ Force LightGallery fullscreen elements to appear on top */
+.lg-backdrop,
+.lg-outer {
+  z-index: 9999 !important;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">Espaço Trium</div>
+     <div class="language-switcher">
+    <span class="lang-option active" data-lang="pt">PT</span>
+    <span class="lang-option" data-lang="en">EN</span>
+  </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </header>
+
+  <!-- Dropdown Menu -->
+  <nav class="dropdown-menu" id="dropdownMenu">
+  <ul>
+    <li><a href="index.html" data-text-pt="Home" data-text-en="Home">Home</a></li>
+    <li><a href="menu.html" data-text-pt="Menu" data-text-en="Menu">Menu</a></li>
+    <li><a href="gallery.html" data-text-pt="Galeria" data-text-en="Gallery">Gallery</a></li>
+    <li><a href="reservation.html" data-text-pt="Reservas" data-text-en="Reservations">Reservations</a></li>
+    <li><a href="contact.html" class="active" data-text-pt="Contactos" data-text-en="Contact">Contact</a></li>
+  </ul>
+</nav>
+
+  <main class="gallery-main">
+    <h2 data-text-pt="Nossa Galeria" data-text-en="Our Gallery">Nossa Galeria</h2>
+    <p class="gallery-subtitle" data-text-pt="Explore a beleza e o sabor da nossa cozinha." data-text-en="Explore the beauty and flavor of our cuisine.">Explore a beleza e o sabor da nossa cozinha.</p>
+</main>
+
+    <div class="carousel lightgallery">
+      <div class="carousel-track">
+        <div class="carousel-item"><a href="images/f1.jpg"><img src="images/f1.jpg" alt="Comida 1"></a></div>
+        <div class="carousel-item"><a href="images/f2.png"><img src="images/f2.png" alt="Comida 2"></a></div>
+        <div class="carousel-item"><a href="images/f3.png"><img src="images/f3.png" alt="Comida 3"></a></div>
+        <div class="carousel-item"><a href="images/f4.png"><img src="images/f4.png" alt="Comida 4"></a></div>
+        <div class="carousel-item"><a href="images/f5.png"><img src="images/f5.png" alt="Comida 5"></a></div>
+        <div class="carousel-item"><a href="images/d2.png"><img src="images/d2.png" alt="Bebida 2"></a></div>
+        <div class="carousel-item"><a href="images/d3.png"><img src="images/d3.png" alt="Bebida 3"></a></div>
+        <div class="carousel-item"><a href="images/f8.png"><img src="images/f8.png" alt="Comida 7"></a></div>
+        <div class="carousel-item"><a href="images/f9.jpg"><img src="images/f9.jpg" alt="Comida 8"></a></div>
+<div class="carousel-item"><a href="images/f10.jpg"><img src="images/f10.jpg" alt="Comida 9"></a></div>
+<div class="carousel-item"><a href="images/f11.jpg"><img src="images/f11.jpg" alt="Comida 10"></a></div>
+<div class="carousel-item"><a href="images/f12.jpg"><img src="images/f12.jpg" alt="Comida 11"></a></div>
+<div class="carousel-item"><a href="images/f13.jpg"><img src="images/f13.jpg" alt="Comida 12"></a></div>
+<div class="carousel-item"><a href="images/f14.jpg"><img src="images/f14.jpg" alt="Comida 13"></a></div>
+<div class="carousel-item"><a href="images/f15.jpg"><img src="images/f15.jpg" alt="Comida 14"></a></div>
+<div class="carousel-item"><a href="images/f16.jpg"><img src="images/f16.jpg" alt="Comida 15"></a></div>
+<div class="carousel-item"><a href="images/f18.jpg"><img src="images/f18.jpg" alt="Comida 17"></a></div>
+<div class="carousel-item"><a href="images/f19.jpg"><img src="images/f19.jpg" alt="Comida 18"></a></div>
+<div class="carousel-item"><a href="images/f20.jpg"><img src="images/f20.jpg" alt="Comida 19"></a></div>
+
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Espaço Trium<br>Website handcrafted with care</p>
+  </footer>
+
+  <!-- LightGallery JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/plugins/zoom/lg-zoom.min.js"></script>
+  <script>
+    lightGallery(document.querySelector(".lightgallery"), {
+      selector: 'a',
+      zoom: true,
+      download: false,
+      actualSize: false,
+    });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('open');
+      dropdownMenu.classList.toggle('open');
+    });
+
+    dropdownMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('open');
+        dropdownMenu.classList.remove('open');
+      });
+    });
+  
+      // --- Language Switcher Script ---
+  const langOptions = document.querySelectorAll('.lang-option');
+  const elementsToTranslate = document.querySelectorAll('[data-text-pt], [data-text-en]');
+  const htmlTag = document.querySelector('html');
+
+  // Function to set the language
+  function setLanguage(lang) {
+    // Update active class for language options
+    langOptions.forEach(option => {
+      if (option.dataset.lang === lang) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
+
+    // Update text content for translatable elements
+    elementsToTranslate.forEach(element => {
+      const textKey = `data-text-${lang}`;
+      if (element.hasAttribute(textKey)) {
+        element.innerHTML = element.getAttribute(textKey);
+      }
+    });
+
+    // Update the lang attribute of the HTML tag
+    htmlTag.setAttribute('lang', lang);
+
+    // Update document title (special case as it's not a direct element in body)
+    if (lang === 'pt') {
+      document.title = 'Contactos | Espaço Trium';
+    } else if (lang === 'en') {
+      document.title = 'Contact | Espaço Trium';
+    }
+  }
+
+  // Add event listeners to language options
+  langOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      setLanguage(option.dataset.lang);
+    });
+  });
+
+  // Initialize language on page load (defaults to Portuguese as per html lang="pt")
+  // You could also store the last chosen language in localStorage and retrieve it here.
+  setLanguage('pt'); // Ensure PT is active initially if html lang="pt"
+</script>
+
+    
+  </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+/* ...existing code... */
+
+.vertical-section-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 2rem 0;
+  gap: 1rem;
+}
+
+.vertical-section-nav a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #333;
+  transition: color 0.2s;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.vertical-section-nav a:hover {
+  background: #f0f0f0;
+  color: #0077cc;
+}
+
+.nav-comida {
+  font-weight: bold;
+  color: #d35400;
+}
+
+.menu-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.comida-title {
+  font-weight: bold;
+  color: #d35400;
+}
+
+.bebidas-title {
+  font-weight: bold;
+  color: #2980b9;
+}
+
+.bebidas-separator {
+  border: none;
+  border-top: 2px solid #2980b9;
+  margin: 2rem 0 1rem 0;
+  width: 100%;
+}
+
+.menu-subsection {
+  margin: 1.5rem 0 1rem 0;
+}
+
+.subsection-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #27ae60;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.menu-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.menu-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.item-name {
+  flex: 1;
+}
+
+.item-price {
+  margin-left: 1rem;
+  font-weight: bold;
+  color: #222;
+  min-width: 80px;
+  text-align: right;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.menu-banner {
+  background: #f7f7f7;
+  border-left: 5px solid #27ae60;
+  padding: 0.7rem 1rem;
+  margin: 2rem 0 1rem 0;
+  border-radius: 6px;
+}
+
+.banner-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+.contact-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.contact-info {
+  flex: 1 1 250px;
+  min-width: 220px;
+}
+
+.contact-info h1 {
+  font-size: 2rem;
+  color: #2980b9;
+  margin-bottom: 0.5rem;
+}
+
+.contact-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.contact-info li {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+}
+
+.contact-form-section {
+  flex: 2 1 350px;
+  min-width: 280px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-form label {
+  font-weight: 600;
+  color: #333;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #2980b9;
+  outline: none;
+}
+
+.contact-form button {
+  background: linear-gradient(90deg, #2980b9 60%, #27ae60 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.contact-form button:hover {
+  background: linear-gradient(90deg, #27ae60 60%, #2980b9 100%);
+}
+
+.gallery-main {
+  max-width: 1100px;
+  margin: 2rem auto 0 auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+}
+
+.gallery-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #2d3436;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
+.gallery-grid {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 2rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gallery-item {
+  flex: 0 0 85vw;
+  max-width: 600px;
+  scroll-snap-align: center;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+
+.gallery-item img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.07);
+}
+
+.bottom-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #27ae60 0%, #2980b9 100%);
+  color: #fff;
+  text-align: center;
+  padding: 1.2rem 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  box-shadow: 0 -2px 12px rgba(44, 62, 80, 0.10);
+}
+
+.bottom-banner-spacer {
+  height: 60px; /* Adjust to match .bottom-banner height */
+}
+
+/* Add padding-bottom to main content to avoid overlap with fixed banner */
+.gallery-main {
+  padding-bottom: 4rem;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  padding: 1rem 0;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+  gap: 2rem;
+}
+
+.navbar ul {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  display: inline;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #2d3436;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar a:hover,
+.navbar a.active {
+  background: #27ae60;
+  color: #fff;
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 62, 80, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  overflow: auto;
+}
+
+.image-modal-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-modal-card img {
+  max-width: 70vw;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.close-modal {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  font-size: 2.5rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 2100;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.close-modal:hover {
+  color: #27ae60;
+}
+
+.video-background {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.video-background video,
+.video-background .video-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-background .video-fallback {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .video-background video {
+    display: none;
+  }
+  .video-background .video-fallback {
+    display: block;
+  }
+}

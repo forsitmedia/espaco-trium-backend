@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-text-pt="Menu | Espaço Trium" data-text-en="Menu | Espaço Trium">Menu | Espaço Trium</title>
+
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <style>
+    /* ✅ GLOBAL STYLES */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fffaf6;
+      color: #333;
+    }
+
+    /* NAVBAR - FIXED TO MATCH OTHER PAGES LAYOUT */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1200;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      /* CRITICAL FIX: Changed justify-content to flex-start */
+      justify-content: flex-start;
+      align-items: center;
+      padding: 1.2rem 2rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(140, 79, 48, 0.08);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #8c4f30;
+      margin-right: 2rem; /* CRITICAL FIX: Added margin-right for spacing */
+    }
+
+    /* Language Switcher Styles - FIXED TO MATCH DESIRED SMALLER SIZE */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem; /* Smaller gap */
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-left: auto; /* Push it to the right */
+    }
+
+    .language-switcher span {
+      color: #8c4f30;
+      cursor: pointer;
+      padding: 0.1rem 0.5rem; /* Smaller padding */
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .language-switcher span.active {
+      background: #8c4f30;
+      color: #fff;
+    }
+
+    .language-switcher span:hover:not(.active) {
+      background: rgba(140, 79, 48, 0.1);
+      color: #8c4f30;
+    }
+
+    /* Hamburger Icon */
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1100;
+      font-size: 2rem;
+      color: #8c4f30;
+      position: relative; /* Ensure it stacks correctly */
+      margin-left: 0rem; /* Add a small margin between language switcher and toggle */
+    }
+
+    
+    .menu-toggle .bar {
+      width: 28px;
+      height: 3px;
+      margin: 4px 0;
+      background: #8c4f30;
+      border-radius: 2px;
+      transition: 0.4s;
+    }
+    /* Hamburger to X animation */
+    .menu-toggle.open .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-toggle.open .bar:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-toggle.open .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      position: fixed;
+      top: -100vh;
+      left: 0;
+      width: 100%;
+       height: 90vh; /* make it cover full height */
+      background: #8c4f30;
+      color: #fff;
+      transition: top 0.4s cubic-bezier(.77,0,.18,1);
+      z-index: 1000;
+      padding-top: 80px; /* space for navbar */
+      box-shadow: none;
+    }
+
+    .dropdown-menu.open {
+      top: 0;
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 2rem;
+    }
+
+    .dropdown-menu li {
+      margin: 1.5rem 0;
+    }
+
+    .dropdown-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: 500;
+      display: block;
+      text-align: left;
+      transition: color 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      color: #ffe0c2;
+    }
+
+    /* Sub-menu styles for "More Languages" - ADDED */
+    .dropdown-menu ul li.has-submenu {
+      position: relative;
+    }
+
+    .dropdown-menu .sub-menu {
+      list-style: none;
+      padding: 0;
+      margin-top: 0.5rem;
+      margin-left: 1.5rem; /* Indent sub-menu further */
+      max-height: 0; /* Initially hidden */
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      background: rgba(0, 0, 0, 0.2); /* Slightly darker background for sub-menu */
+      border-radius: 5px;
+    }
+
+    .dropdown-menu .sub-menu.open-sub-menu {
+      max-height: 500px; /* Sufficient height to show all items */
+      transition: max-height 0.6s ease-in;
+    }
+
+    .dropdown-menu .sub-menu li {
+      margin: 0.5rem 0; /* Smaller margin for sub-menu items */
+    }
+
+    .dropdown-menu .sub-menu a {
+      font-size: 1.1rem; /* Slightly smaller font for sub-menu items */
+      padding: 0.5rem 1rem; /* Padding for click area */
+      display: block;
+    }
+
+    .dropdown-menu .sub-menu a:hover {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+
+    /* Existing styles, ensure no conflict */
+    header, footer {
+      background: #8c4f30;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 80%;
+      margin: 1rem auto;
+      padding: 0 1rem;
+      padding-top: 72px; /* Ensure content is below fixed navbar */
+    }
+
+    h2 {
+      background: #cb8f6a12;
+      padding: 0.75rem 1rem;
+      border-left: 5px solid #a16741;
+      margin-top: 2rem;
+      font-size: 1.1rem;
+    }
+
+    ul {
+      padding-left: 1rem;
+      list-style: none;
+    }
+
+    li {
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+      font-size: 0.95rem;
+    }
+
+    .section-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .menu-separator {
+      position: relative;
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .menu-separator span {
+      background: #fff;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-separator:before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 50%;
+      left: 0;
+      background: #f0e6e0;
+      z-index: 0;
+      transform: translateY(-50%);
+      border-radius: 10px;
+    }
+
+    .vertical-section-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .vertical-section-nav a {
+      background: #9c5e35;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .vertical-section-nav a:hover {
+      background: #8a5635;
+    }
+
+    .menu-section {
+      margin-bottom: 4rem;
+    }
+
+    .section-title {
+      display: block;
+      background: #cccccb00;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .section-title:before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 5px;
+      top: 0;
+      left: 0;
+      background: #a16741;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .bebidas-separator {
+      border: 0;
+      height: 5px; /* Corrected from px */
+      background: #a16741;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .navbar nav ul {
+        display: none;
+      }
+      .menu-toggle {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: row;
+        justify-content: space-around;
+      }
+      .section-nav {
+        flex-direction: column;
+        align-items: center;
+      }
+      h2 {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+      }
+      li {
+        font-size: 0.9rem;
+      }
+    }
+
+    #bebidas::before {
+      content: "";
+      display: block;
+      height: 80px; /* Adjust this based on your navbar height */
+      margin-top: -80px;
+      visibility: hidden;
+    }
+    /* ✅ Custom Scrollbar Style */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(100, 31, 2, 0.133);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: background-color 0.3s;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+  </style>
+</head>
+<body>
+<header class="navbar">
+    <div class="logo">Espaço Trium</div>
+    <div class="language-switcher">
+      <span class="lang-option active" data-lang="pt">PT</span>
+      <span class="lang-option" data-lang="en">EN</span>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </header>
+
+  <nav class="dropdown-menu" id="dropdownMenu">
+    <ul>
+      <li><a href="index.html" data-text-pt="Home" data-text-en="Home">Home</a></li>
+      <li><a href="menu.html" class="active" data-text-pt="Menu" data-text-en="Menu">Menu</a></li>
+      <li><a href="gallery.html" data-text-pt="Galeria" data-text-en="Gallery">Gallery</a></li>
+      <li><a href="reservation.html" data-text-pt="Reservas" data-text-en="Reservations">Reservations</a></li>
+      <li><a href="contact.html" data-text-pt="Contactos" data-text-en="Contact">Contact</a></li>
+
+      <li class="has-submenu">
+        <a href="#" class="submenu-toggle" data-text-pt="Mais Idiomas" data-text-en="More Languages">Mais Idiomas</a>
+        <ul class="sub-menu">
+          <li><a href="#" data-lang-code="fr">Français</a></li>
+          <li><a href="#" data-lang-code="de">Deutsch</a></li>
+          <li><a href="#" data-lang-code="es">Español</a></li>
+          <li><a href="#" data-lang-code="it">Italiano</a></li>
+          <li><a href="#" data-lang-code="ru">Русский</a></li>
+          <li><a href="#" data-lang-code="zh">中文</a></li>
+          <li><a href="#" data-lang-code="ja">日本語</a></li>
+          <li><a href="#" data-lang-code="nl">Nederlands</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+
+  <div class="container">
+    <nav class="vertical-section-nav">
+  <a href="#bebidas" data-text-pt="🍷 BEBIDAS" data-text-en="🍷 DRINKS">🍷 BEBIDAS</a>
+</nav>
+
+    
+    <div id="comida" class="menu-section">
+      <span class="section-title" data-text-pt="COMIDA" data-text-en="FOOD">COMIDA</span>
+
+      <div class="menu-banner">
+        <h2 data-text-pt="💫 Entradas" data-text-en="💫 Starters">💫 Entradas</h2>
+      </div>
+      <ul class="menu-list">
+        <li><span data-text-pt="Cesto de pão" data-text-en="Bread">Cesto de pão</span> — €2,50</li>
+        <li><span data-text-pt="Manteiga" data-text-en="Butter">Manteiga</span> — €0,70</li>
+        <li><span data-text-pt="Palitos de cenoura com patê de manjericão" data-text-en="Carrot sticks with basil pâté">Palitos de cenoura com patê de manjericão</span> — €5,00</li>
+        <li><span data-text-pt="Azeite com redução de balsâmico" data-text-en="Olive oil with balsamic reduction">Azeite com redução de balsâmico</span> — €2,00</li>
+        <li><span data-text-pt="Azeitonas" data-text-en="Olives">Azeitonas</span> — €2,00</li>
+      </ul>
+      <h2 data-text-pt="🍲 Sopas" data-text-en="🍲 Soups">🍲 Sopas</h2>
+      <ul>
+        <li><span data-text-pt="Sopa do dia" data-text-en="Soup of the day">Sopa do dia</span> — €3,80</li>
+        <li><span data-text-pt="Sopa de cebola gratinada" data-text-en="Gratin onion soup">Sopa de cebola gratinada</span> — €7,90</li>
+      </ul>
+      <h2 data-text-pt="🍄 Entradas quentes e frias" data-text-en="🍄 Warm & Cold Starters">🍄 Entradas quentes e frias</h2>
+      <ul>
+        <li><span data-text-pt="Cogumelos à bulhão pato" data-text-en="Mushrooms Portuguese style">Cogumelos à bulhão pato</span> — €9,80</li>
+        <li><span data-text-pt="Salada Caprese" data-text-en="Caprese Salad">Salada Caprese</span> — €10,90</li>
+        <li><span data-text-pt="Camarão panado com molho teriyaki" data-text-en="Breaded shrimp with teriyaki sauce">Camarão panado com molho teriyaki</span> — €15,90</li>
+        <li><span data-text-pt="Gambas fritas com alho" data-text-en="Fried prawns with garlic">Gambas fritas com alho</span> — €16,90</li>
+        <li><span data-text-pt="Salada de polvo" data-text-en="Octopus salad">Salada de polvo</span> — €13,90</li>
+        <li><span data-text-pt="Pica-pau de atum com alcaparras" data-text-en="Tuna pica-pau with capers">Pica-pau de atum com alcaparras</span> — €16,60</li>
+        <li><span data-text-pt="Tirinhas de choco" data-text-en="Cuttlefish strips">Tirinhas de choco</span> — €11,90</li>
+        <li><span data-text-pt="Pica-pau de carne" data-text-en="Meat pica-pau">Pica-pau de carne</span> — €17,50</li>
+        <li><span data-text-pt="Carpaccio de novilho" data-text-en="Veal carpaccio">Carpaccio de novilho</span> — €15,80</li>
+        <li><span data-text-pt="Camembert quente com ervas" data-text-en="Hot Camembert with herbs">Camembert quente com ervas</span> — €9,20</li>
+        <li><span data-text-pt="Lascas de parmesão com goiabada" data-text-en="Parmesan flakes with guava paste">Lascas de parmesão com goiabada</span> — €8,20</li>
+        <li><span data-text-pt="Prato de queijos e presunto" data-text-en="Cheese and ham platter">Prato de queijos e presunto</span> — €18,90</li>
+      </ul>
+      <h2 data-text-pt="🍳 Ovos & Omeletes" data-text-en="🍳 Eggs & Omelets">🍳 Ovos & Omeletes</h2>
+      <ul>
+        <li><span data-text-pt="Ovos mexidos simples" data-text-en="Plain scrambled eggs">Ovos mexidos simples</span> — €7,00</li>
+        <li><span data-text-pt="Ovos mexidos cogumelos e tomate seco" data-text-en="Scrambled eggs with mushrooms and sundried tomatoes">Ovos mexidos cogumelos e tomate seco</span> — €8,90</li>
+        <li><span data-text-pt="Ovos mexidos com farinheira" data-text-en="Scrambled eggs with farinheira sausage">Ovos mexidos com farinheira</span> — €9,80</li>
+        <li><span data-text-pt="Ovos mexidos com bacon" data-text-en="Scrambled eggs with bacon">Ovos mexidos com bacon</span> — €9,80</li>
+        <li><span data-text-pt="Ovos mexidos com camarão" data-text-en="Scrambled eggs with shrimp">Ovos mexidos com camarão</span> — €13,70</li>
+        <li><span data-text-pt="Omelete mista" data-text-en="Mixed omelet">Omelete mista</span> — €9,50</li>
+      </ul>
+      <h2 data-text-pt="🍛 Especialidades" data-text-en="🍛 Specialities">🍛 Especialidades</h2>
+      <ul>
+        <li><span data-text-pt="Feijoada à Brasileira" data-text-en="Brazilian Feijoada">Feijoada à Brasileira</span> — €22,00</li>
+      </ul>
+      <h2 data-text-pt="🐟 Peixes & Mariscos" data-text-en="🐟 Fish & Seafood">🐟 Peixes & Mariscos</h2>
+      <ul>
+        <li><span data-text-pt="Caril de camarão com ananás e coco" data-text-en="Shrimp curry with pineapple and coconut">Caril de camarão com ananás e coco</span> — €18,00</li>
+        <li><span data-text-pt="Gambas tigre grelhadas com abacaxi" data-text-en="Grilled tiger prawns with pineapple">Gambas tigre grelhadas com abacaxi</span> — €41,00</li>
+        <li><span data-text-pt="Moqueca de camarão" data-text-en="Shrimp Moqueca">Moqueca de camarão</span> — €20,50</li>
+        <li><span data-text-pt="Moqueca de bacalhau" data-text-en="Cod Moqueca">Moqueca de bacalhau</span> — €20,50</li>
+        <li><span data-text-pt="Conquilhas de Saint-Jacques" data-text-en="Scallops (Saint-Jacques)">Conquilhas de Saint-Jacques</span> — €14,90</li>
+        <li><span data-text-pt="Salmão com molho de manteiga" data-text-en="Salmon with butter sauce">Salmão com molho de manteiga</span> — €17,90</li>
+        <li><span data-text-pt="Lombo de atum com sementes" data-text-en="Tuna loin with seeds">Lombo de atum com sementes</span> — €19,60</li>
+        <li><span data-text-pt="Lombo de bacalhau com espinafres" data-text-en="Cod loin with spinach">Lombo de bacalhau com espinafres</span> — €19,50</li>
+        <li><span data-text-pt="Polvo à lagareiro" data-text-en="Octopus 'à Lagareiro'">Polvo à lagareiro</span> — €19,50</li>
+        <li><span data-text-pt="Linguine negro com camarão" data-text-en="Black linguine with shrimp">Linguine negro com camarão</span> — €18,50</li>
+      </ul>
+      <h2 data-text-pt="🥩 Carnes" data-text-en="🥩 Meats">🥩 Carnes</h2>
+      <ul>
+        <li><span data-text-pt="Tomahawk grelhado" data-text-en="Grilled Tomahawk">Tomahawk grelhado</span> — €72,00</li>
+        <li><span data-text-pt="Chuletón premium" data-text-en="Premium Chuletón">Chuletón premium</span> — €38,70</li>
+        <li><span data-text-pt="Bife do lombo" data-text-en="Sirloin steak">Bife do lombo</span> — €28,00</li>
+        <li><span data-text-pt="Bitoque" data-text-en="Bitoque">Bitoque</span> — €10,90</li>
+        <li><span data-text-pt="Prego no pão" data-text-en="Steak sandwich">Prego no pão</span> — €9,50</li>
+        <li><span data-text-pt="Caril de frango" data-text-en="Chicken curry">Caril de frango</span> — €14,90</li>
+        <li><span data-text-pt="Peito de frango com manteiga" data-text-en="Chicken breast with butter">Peito de frango com manteiga</span> — €14,90</li>
+        <li><span data-text-pt="Prego de frango no pão" data-text-en="Chicken sandwich">Prego de frango no pão</span> — €8,60</li>
+      </ul>
+    </div>
+      <h2 data-text-pt="🍶 Molhos" data-text-en="🍶 Sauces">🍶 Molhos</h2>
+      <ul>
+        <li><span data-text-pt="Cerveja e alho" data-text-en="Beer and garlic">Cerveja e alho</span> — €3,00</li>
+        <li><span data-text-pt="Mostarda" data-text-en="Mustard">Mostarda</span> — €3,50</li>
+        <li><span data-text-pt="Pimenta verde" data-text-en="Green pepper">Pimenta verde</span> — €2,80</li>
+        <li><span data-text-pt="Cogumelos" data-text-en="Mushrooms">Cogumelos</span> — €4,60</li>
+      </ul>
+      <h2 data-text-pt="🍽️ Acompanhamentos" data-text-en="🍽️ Sides">🍽️ Acompanhamentos</h2>
+      <ul>
+        <li><span data-text-pt="Arroz" data-text-en="Rice">Arroz</span> — €3,50</li>
+        <li><span data-text-pt="Feijão preto" data-text-en="Black beans">Feijão preto</span> — €3,50</li>
+        <li><span data-text-pt="Farofa" data-text-en="Farofa">Farofa</span> — €4,50</li>
+        <li><span data-text-pt="Batata frita" data-text-en="French fries">Batata frita</span> — €8,00</li>
+        <li><span data-text-pt="Espinafres salteados" data-text-en="Sautéed spinach">Espinafres salteados</span> — €8,00</li>
+      </ul>
+      <h2 data-text-pt="🍔 Menu Criança" data-text-en="🍔 Children's Menu">🍔 Menu Criança</h2>
+      <ul>
+        <li><span data-text-pt="Prego no prato com batata frita" data-text-en="Steak on plate with french fries">Prego no prato com batata frita</span> — €15,50</li>
+        <li><span data-text-pt="Spaghetti Carbonara" data-text-en="Spaghetti Carbonara">Spaghetti Carbonara</span> — €16,90</li>
+      </ul>
+      <h2 data-text-pt="🥦 Vegetarianos" data-text-en="🥦 Vegetarian">🥦 Vegetarianos</h2>
+      <ul>
+        <li><span data-text-pt="Pasta com ratatouille e seitan" data-text-en="Pasta with ratatouille and seitan">Pasta com ratatouille e seitan</span> — €14,00</li>
+        <li><span data-text-pt="Beringela recheada com soja" data-text-en="Eggplant stuffed with soy">Beringela recheada com soja</span> — €17,00</li>
+        <li><span data-text-pt="Caril de grão com legumes" data-text-en="Chickpea curry with vegetables">Caril de grão com legumes</span> — €10,90</li>
+        <li><span data-text-pt="Pasta cogumelos e azeite de trufas" data-text-en="Mushroom pasta and truffle oil">Pasta cogumelos e azeite de trufas</span> — €12,50</li>
+      </ul>
+      <h2 data-text-pt="🥗 Saladas" data-text-en="🥗 Salads">🥗 Saladas</h2>
+      <ul>
+        <li><span data-text-pt="Salada verde com uvas" data-text-en="Green salad with grapes">Salada verde com uvas</span> — €14,70</li>
+        <li><span data-text-pt="Salada de atum" data-text-en="Tuna salad">Salada de atum</span> — €16,50</li>
+        <li><span data-text-pt="Salada de salmão fumado" data-text-en="Smoked salmon salad">Salada de salmão fumado</span> — €18,00</li>
+        <li><span data-text-pt="Salada de presunto" data-text-en="Ham salad">Salada de presunto</span> — €16,00</li>
+        <li><span data-text-pt="Salada trium (frango/camarão)" data-text-en="Trium salad (chicken/shrimp)">Salada trium (frango/camarão)</span> — €16,00</li>
+      </ul>
+      <div class="menu-section">
+  <hr class="bebidas-separator"/>
+  <div id="bebidas" class="scroll-anchor"></div>
+  <span class="section-title" data-text-pt="BEBIDAS" data-text-en="DRINKS">BEBIDAS</span>
+
+      <h2 data-text-pt="🥤 Águas & Refrigerantes" data-text-en="🥤 Water & Soft Drinks">🥤 Águas & Refrigerantes</h2>
+      <ul>
+        <li><span data-text-pt="Água 0,5L" data-text-en="Water 0,5L">Água 0,5L</span> — €1,50</li>
+        <li><span data-text-pt="Água com gás" data-text-en="Sparkling water">Água com gás</span> — €2,50</li>
+        <li><span data-text-pt="Água com gás sabor" data-text-en="Flavored sparkling water">Água com gás sabor</span> — €2,80</li>
+        <li><span data-text-pt="Água tónica" data-text-en="Tonic water">Água tónica</span> — €2,80</li>
+        <li><span data-text-pt="Refrigerante" data-text-en="Soft drink">Refrigerante</span> — €2,50</li>
+        <li><span data-text-pt="Ginger Ale" data-text-en="Ginger Ale">Ginger Ale</span> — €2,50</li>
+      </ul>
+      <h2 data-text-pt="🍋 Sumos Naturais" data-text-en="🍋 Natural Juices">🍋 Sumos Naturais</h2>
+      <ul>
+        <li><span data-text-pt="Limonada com menta" data-text-en="Lemonade with mint">Limonada com menta</span> — €5,50</li>
+        <li><span data-text-pt="Sumo de 1 fruta" data-text-en="1 fruit juice">Sumo de 1 fruta</span> — €5,00</li>
+        <li><span data-text-pt="Sumo de 2 frutas" data-text-en="2 fruit juice">Sumo de 2 frutas</span> — €5,50</li>
+        <li><span data-text-pt="Batido" data-text-en="Smoothie">Batido</span> — €7,50</li>
+      </ul>
+      <h2 data-text-pt="🍷 Sangrias & Vinhos" data-text-en="🍷 Sangrias & Wines">🍷 Sangrias & Vinhos</h2>
+      <ul>
+        <li><span data-text-pt="Sangria tinto" data-text-en="Red Sangria">Sangria tinto</span> — €18,50</li>
+        <li><span data-text-pt="Sangria branco" data-text-en="White Sangria">Sangria branco</span> — €18,50</li>
+        <li><span data-text-pt="Sangria de citrinos" data-text-en="Citrus Sangria">Sangria de citrinos</span> — €18,50</li>
+        <li><span data-text-pt="Sangria rosé" data-text-en="Rosé Sangria">Sangria rosé</span> — €18,50</li>
+        <li><span data-text-pt="Sangria de espumante" data-text-en="Sparkling wine Sangria">Sangria de espumante</span> — €21,00</li>
+        <li><span data-text-pt="Vinho da casa tinto" data-text-en="House red wine">Vinho da casa tinto</span> — €14,00</li>
+        <li><span data-text-pt="Vinho da casa branco" data-text-en="House white wine">Vinho da casa branco</span> — €14,00</li>
+        <li><span data-text-pt="Vinho da casa rosé" data-text-en="House rosé wine">Vinho da casa rosé</span> — €14,00</li>
+      </ul>
+      <h2 data-text-pt="🍸 Gin" data-text-en="🍸 Gin">🍸 Gin</h2>
+      <ul>
+        <li><span data-text-pt="Gin Gordon’s" data-text-en="Gordon’s Gin">Gin Gordon’s</span> — €8,00</li>
+        <li><span data-text-pt="Tanqueray Rangpur" data-text-en="Tanqueray Rangpur">Tanqueray Rangpur</span> — €10,00</li>
+        <li><span data-text-pt="Bombay Sapphire" data-text-en="Bombay Sapphire">Bombay Sapphire</span> — €13,00</li>
+        <li><span data-text-pt="Beefeater" data-text-en="Beefeater">Beefeater</span> — €14,00</li>
+        <li><span data-text-pt="Hendrick’s" data-text-en="Hendrick’s">Hendrick’s</span> — €14,00</li>
+      </ul>
+      <h2 data-text-pt="🍹 Cocktails" data-text-en="🍹 Cocktails">🍹 Cocktails</h2>
+      <ul>
+        <li><span data-text-pt="Caipirinha" data-text-en="Caipirinha">Caipirinha</span> — €8,00</li>
+        <li><span data-text-pt="Caipiroska" data-text-en="Caipiroska">Caipiroska</span> — €8,00</li>
+        <li><span data-text-pt="Caipifruta" data-text-en="Caipifruta">Caipifruta</span> — €9,00</li>
+        <li><span data-text-pt="Mojito" data-text-en="Mojito">Mojito</span> — €10,50</li>
+        <li><span data-text-pt="Saikerita" data-text-en="Saikerita">Saikerita</span> — €8,00</li>
+        <li><span data-text-pt="Daiquiri de morango" data-text-en="Strawberry Daiquiri">Daiquiri de morango</span> — €12,00</li>
+        <li><span data-text-pt="Piña colada" data-text-en="Piña colada">Piña colada</span> — €12,50</li>
+        <li><span data-text-pt="Aperol Spritz" data-text-en="Aperol Spritz">Aperol Spritz</span> — €9,00</li>
+      </ul>
+      <h2 data-text-pt="🍺 Cervejas" data-text-en="🍺 Beers">🍺 Cervejas</h2>
+      <ul>
+        <li><span data-text-pt="Imperial (0,25cl)" data-text-en="Imperial (0,25cl)">Imperial (0,25cl)</span> — €2,50</li>
+        <li><span data-text-pt="Caneca (0,33cl)" data-text-en="Mug (0,33cl)">Caneca (0,33cl)</span> — €3,50</li>
+        <li><span data-text-pt="Caneca (0,50cl)" data-text-en="Mug (0,50cl)">Caneca (0,50cl)</span> — €5,00</li>
+        <li><span data-text-pt="Sagres garrafa" data-text-en="Sagres bottle">Sagres garrafa</span> — €2,50</li>
+        <li><span data-text-pt="Sagres s/álcool" data-text-en="Sagres non-alcoholic">Sagres s/álcool</span> — €2,80</li>
+        <li><span data-text-pt="Mini Sagres" data-text-en="Mini Sagres">Mini Sagres</span> — €1,50</li>
+      </ul>
+    </div>
+  </div>
+
+<footer>
+    <p data-text-pt="&copy; 2025 Espaço Trium<br>Website artesanalmente criado com cuidado" data-text-en="&copy; 2025 Espaço Trium<br>Website handcrafted with care">&copy; 2025 Espaço Trium<br>Website handcrafted with care</p>
+  </footer>
+
+
+<div class="scroll-dot" id="scrollDot"></div>
+
+<script>
+  // --- IMPORTANT: Consolidated all scripts into one block ---
+
+  // Existing Menu Toggle (moved to top for robustness)
+  const menuToggle = document.getElementById('menuToggle');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+
+  // Add checks to ensure elements exist before attaching listeners
+  if (menuToggle && dropdownMenu) {
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('open');
+      dropdownMenu.classList.toggle('open');
+    });
+
+    // Modified to not close for submenu-toggle, to allow sub-menu to remain open
+    dropdownMenu.querySelectorAll('ul > li > a:not(.submenu-toggle)').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('open');
+        dropdownMenu.classList.remove('open');
+      });
+    });
+  }
+
+  // --- Language Switcher Script - ADDED ---
+  const langOptions = document.querySelectorAll('.lang-option');
+  const elementsToTranslate = document.querySelectorAll('[data-text-pt], [data-text-en]');
+  const htmlTag = document.querySelector('html');
+
+  function setLanguage(lang) {
+    langOptions.forEach(option => {
+      if (option.dataset.lang === lang) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
+
+    elementsToTranslate.forEach(element => {
+      const textKey = `data-text-${lang}`;
+      if (element.hasAttribute(textKey)) {
+        element.innerHTML = element.getAttribute(textKey);
+      }
+    });
+
+    htmlTag.setAttribute('lang', lang);
+
+    // Update document title dynamically
+    const titleElement = document.querySelector('title');
+    if (titleElement) {
+      if (lang === 'pt') {
+        titleElement.textContent = titleElement.getAttribute('data-text-pt') || 'Menu | Espaço Trium';
+      } else if (lang === 'en') {
+        titleElement.textContent = titleElement.getAttribute('data-text-en') || 'Menu | Espaço Trium';
+      }
+    }
+  }
+
+  langOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      setLanguage(option.dataset.lang);
+    });
+  });
+
+  // Initialize language on page load
+  setLanguage('pt');
+
+  // --- Sub-menu toggle script for "More Languages" - ADDED ---
+  const submenuToggle = document.querySelector('.submenu-toggle');
+  const subMenu = document.querySelector('.sub-menu');
+
+  if (submenuToggle && subMenu) {
+    submenuToggle.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default link behavior
+      subMenu.classList.toggle('open-sub-menu');
+    });
+
+    subMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default link behavior
+        const langName = e.target.textContent;
+        const langCode = e.target.dataset.langCode;
+        alert(`You selected: ${langName} (${langCode}). \n\nNote: For this demo, full content translation to this language is not implemented. You would typically link to a specific language version of the page or use a more advanced i18n system.`);
+
+        // Optionally, close both menus after selection
+        subMenu.classList.remove('open-sub-menu');
+        menuToggle.classList.remove('open');
+        dropdownMenu.classList.remove('open');
+      });
+    });
+  }
+
+  // --- Existing Scroll Dot Indicator Script ---
+  const scrollDot = document.getElementById('scrollDot');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = scrollTop / scrollHeight;
+
+    // Set vertical position based on scroll percent
+    const newTop = 80 + scrollPercent * (window.innerHeight - 160); // stays within screen
+    scrollDot.style.top = `${newTop}px`;
+  });
+</script>
+
+</body>
+</html>

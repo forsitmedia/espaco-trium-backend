@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-text-pt="Reserva Inteligente | Espaço Trium" data-text-en="Smart Reservation | Espaço Trium">Smart Reservation | Espaço Trium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
+
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #fffaf5;
+      padding-top: 72px;
+    }
+
+    /* NAVBAR - FIXED TO MATCH CONTACT/GALLERY LAYOUT */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      /* CRITICAL FIX: Removed justify-content: space-between; */
+      align-items: center;
+      padding: 1.2rem 2rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(140, 79, 48, 0.08);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #8c4f30;
+      margin-right: 2rem; /* CRITICAL FIX: Added margin-right for spacing */
+    }
+
+    /* Language Switcher Styles - FIXED TO MATCH YOUR DESIRED SMALLER SIZE (like gallery) */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem; /* Smaller gap */
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-left: auto; /* Push it to the right */
+    }
+
+    .language-switcher span {
+      color: #8c4f30;
+      cursor: pointer;
+      padding: 0.1rem 0.5rem; /* Smaller padding */
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .language-switcher span.active {
+      background: #8c4f30;
+      color: #fff;
+    }
+
+    .language-switcher span:hover:not(.active) {
+      background: rgba(140, 79, 48, 0.1);
+      color: #8c4f30;
+    }
+
+    /* MENU TOGGLE & DROPDOWN MENU */
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      font-size: 2rem;
+      color: #8c4f30;
+    }
+
+    .menu-toggle .bar {
+      display: block;
+      width: 28px;
+      height: 3px;
+      margin: 4px 0;
+      background: #8c4f30;
+      border-radius: 2px;
+      transition: 0.4s;
+    }
+
+    .menu-toggle.open .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.open .bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* DROPDOWN MENU ANIMATION FIX */
+    .dropdown-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: #8c4f30;
+      color: #fff;
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(.77,0,.18,1);
+      z-index: 200;
+      padding-top: 100px;
+      box-sizing: border-box;
+      overflow: auto;
+    }
+
+    .dropdown-menu.open {
+      transform: translateY(0);
+    }
+
+    .dropdown-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 2rem;
+    }
+
+    .dropdown-menu li {
+      margin: 1.5rem 0;
+    }
+
+    .dropdown-menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: 500;
+      display: block;
+      text-align: left;
+      transition: color 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      color: #ffe0c2;
+    }
+
+    /* Sub-menu styles for "More Languages" - RE-ADDED */
+    .dropdown-menu ul li.has-submenu {
+      position: relative;
+    }
+
+    .dropdown-menu .sub-menu {
+      list-style: none;
+      padding: 0;
+      margin-top: 0.5rem;
+      margin-left: 1.5rem; /* Indent sub-menu further */
+      max-height: 0; /* Initially hidden */
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      background: rgba(0, 0, 0, 0.2); /* Slightly darker background for sub-menu */
+      border-radius: 5px;
+    }
+
+    .dropdown-menu .sub-menu.open-sub-menu {
+      max-height: 500px; /* Sufficient height to show all items */
+      transition: max-height 0.6s ease-in;
+    }
+
+    .dropdown-menu .sub-menu li {
+      margin: 0.5rem 0; /* Smaller margin for sub-menu items */
+    }
+
+    .dropdown-menu .sub-menu a {
+      font-size: 1.1rem; /* Slightly smaller font for sub-menu items */
+      padding: 0.5rem 1rem; /* Padding for click area */
+      display: block;
+    }
+
+    .dropdown-menu .sub-menu a:hover {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+    /* Style for the reservation form layout */
+    .reservation-section {
+      padding: 2rem;
+      z-index: 10;
+      max-width: 700px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .reservation-section h1 {
+      text-align: center;
+      color: #8c4f30;
+      margin-bottom: 2rem;
+    }
+
+    /* Style for form fields and spacing */
+    .form-step {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      background: #8c4f30;
+      color: white;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background: #6f3c24;
+    }
+
+    /* Footer fixed to bottom */
+    footer {
+      background: #8c4f30;
+      color: white;
+      text-align: center;
+      padding: 1.5rem 0;
+      font-size: 0.9rem;
+      margin-top: 4rem;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">Espaço Trium</div>
+    <div class="language-switcher">
+      <span class="lang-option active" data-lang="pt">PT</span>
+      <span class="lang-option" data-lang="en">EN</span>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </header>
+
+  <nav class="dropdown-menu" id="dropdownMenu">
+    <ul>
+      <li><a href="index.html" data-text-pt="Home" data-text-en="Home">Home</a></li>
+      <li><a href="menu.html" data-text-pt="Menu" data-text-en="Menu">Menu</a></li>
+      <li><a href="gallery.html" data-text-pt="Galeria" data-text-en="Gallery">Gallery</a></li>
+      <li><a href="reservation.html" class="active" data-text-pt="Reservas" data-text-en="Reservations">Reservations</a></li>
+      <li><a href="contact.html" data-text-pt="Contactos" data-text-en="Contact">Contact</a></li>
+
+      <li class="has-submenu">
+        <a href="#" class="submenu-toggle" data-text-pt="Mais Idiomas" data-text-en="More Languages">Mais Idiomas</a>
+        <ul class="sub-menu">
+          <li><a href="#" data-lang-code="fr">Français</a></li>
+          <li><a href="#" data-lang-code="de">Deutsch</a></li>
+          <li><a href="#" data-lang-code="es">Español</a></li>
+          <li><a href="#" data-lang-code="it">Italiano</a></li>
+          <li><a href="#" data-lang-code="ru">Русский</a></li>
+          <li><a href="#" data-lang-code="zh">中文</a></li>
+          <li><a href="#" data-lang-code="ja">日本語</a></li>
+          <li><a href="#" data-lang-code="nl">Nederlands</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <section class="reservation-section">
+    <div class="container">
+      <h1 data-text-pt="Reserve uma Mesa" data-text-en="Reserve a Table">Reserve a Table</h1>
+      <form id="reservation-form">
+        <div class="form-step">
+          <label for="date-picker" data-text-pt="1. Escolha uma Data:" data-text-en="1. Choose a Date:">1. Choose a Date:</label>
+          <input type="text" name="date" id="date-picker" required data-text-pt-placeholder="Selecione uma data" data-text-en-placeholder="Select a date" placeholder="Select a date" readonly>
+        </div>
+
+        <div class="form-step">
+          <label for="time" data-text-pt="2. Escolha uma Hora:" data-text-en="2. Choose a Time:">2. Choose a Time:</label>
+          <select name="time" id="time" required>
+            <option value="" data-text-pt="Selecione uma hora" data-text-en="Select a time">Select a time</option>
+          </select>
+        </div>
+
+        <div class="form-step">
+          <label for="guests" data-text-pt="3. Número de Pessoas:" data-text-en="3. Number of Guests:">3. Number of Guests:</label>
+          <select name="guests" id="guests" required>
+            <option value="" data-text-pt="Selecione o número de pessoas" data-text-en="Select guests">Select guests</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+          </select>
+        </div>
+
+        <div class="form-step">
+          <label for="name" data-text-pt="Seu Nome:" data-text-en="Your Name:">Your Name:</label>
+          <input type="text" name="name" id="name" required>
+
+          <label for="email" data-text-pt="Email:" data-text-en="Email:">Email:</label>
+          <input type="email" name="email" id="email" required>
+
+          <label for="phone" data-text-pt="Telefone:" data-text-en="Phone:">Phone:</label>
+          <input type="tel" name="phone" id="phone" required>
+
+          <label for="seating" data-text-pt="Preferência de Assento:" data-text-en="Seating Preference:">Seating Preference:</label>
+          <select name="seating" id="seating" required>
+            <option value="" data-text-pt="Selecione o assento" data-text-en="Select seating">Select seating</option>
+            <option value="inside" data-text-pt="Dentro" data-text-en="Inside">Inside</option>
+            <option value="outside" data-text-pt="Fora" data-text-en="Outside">Outside</option>
+          </select>
+
+          <label for="message" data-text-pt="Pedidos Especiais (opcional):" data-text-en="Special Requests (optional):">Special Requests (optional):</label>
+          <textarea name="message" id="message"></textarea>
+        </div>
+
+        <button type="submit" data-text-pt="Confirmar Reserva" data-text-en="Confirm Reservation">Confirm Reservation</button>
+        <p id="response-message"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p data-text-pt="&copy; 2025 Espaço Trium<br>Website artesanalmente criado com cuidado" data-text-en="&copy; 2025 Espaço Trium<br>Website handcrafted with care">&copy; 2025 Espaço Trium<br>Website handcrafted with care</p>
+  </footer>
+
+  <script>
+    // --- CRITICAL FIX: Moved Menu Toggle Script to the top for robustness ---
+    const menuToggle = document.getElementById('menuToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    // Add checks to ensure elements exist before attaching listeners
+    if (menuToggle && dropdownMenu) {
+      menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('open');
+        dropdownMenu.classList.toggle('open');
+      });
+
+      // Modified to not close for submenu-toggle, to allow sub-menu to remain open
+      dropdownMenu.querySelectorAll('ul > li > a:not(.submenu-toggle)').forEach(link => {
+        link.addEventListener('click', () => {
+          menuToggle.classList.remove('open');
+          dropdownMenu.classList.remove('open');
+        });
+      });
+    }
+    // --- END CRITICAL FIX ---
+
+    const form = document.getElementById('reservation-form');
+    const timeSelect = document.getElementById('time');
+    const messageDisplay = document.getElementById('response-message');
+    const dateInput = document.getElementById('date-picker');
+
+    // NEW: Translation dictionary for dynamic JS messages
+    const translations = {
+      'pt': {
+        'select_time': 'Selecione uma hora',
+        'lunch': 'Almoço',
+        'dinner': 'Jantar',
+        'reservation_confirmed': 'Reserva confirmada!',
+        'something_went_wrong': 'Algo deu errado.',
+        'server_error': 'Erro do servidor. Por favor, tente novamente mais tarde.',
+        'select_seating': 'Selecione o assento'
+      },
+      'en': {
+        'select_time': 'Select a time',
+        'lunch': 'Lunch',
+        'dinner': 'Dinner',
+        'reservation_confirmed': 'Reservation confirmed!',
+        'something_went_wrong': 'Something went wrong.',
+        'server_error': 'Server error. Please try again later.',
+        'select_seating': 'Select seating'
+      }
+    };
+
+    let currentLang = document.documentElement.lang; // Track current language
+
+    // Function to update dynamic messages in JS
+    function updateDynamicText() {
+        const selectedTimeOption = timeSelect.querySelector('option[value=""]');
+        if (selectedTimeOption) {
+            selectedTimeOption.textContent = translations[currentLang]['select_time'];
+        }
+        
+        // Update placeholder for date input
+        const datePickerPlaceholder = dateInput.getAttribute(`data-text-${currentLang}-placeholder`);
+        if (datePickerPlaceholder) {
+            dateInput.setAttribute('placeholder', datePickerPlaceholder);
+        }
+
+        // Update initial guest select option
+        const guestSelect = document.getElementById('guests');
+        if (guestSelect) {
+            const guestPlaceholder = guestSelect.querySelector('option[value=""]');
+            if (guestPlaceholder) {
+                guestPlaceholder.textContent = translations[currentLang]['select_guests'] || (currentLang === 'pt' ? 'Selecione o número de pessoas' : 'Select guests');
+            }
+        }
+        
+        // Update seating preference options
+        const seatingSelect = document.getElementById('seating');
+        if (seatingSelect) {
+            const seatingPlaceholder = seatingSelect.querySelector('option[value=""]');
+            if (seatingPlaceholder) {
+                seatingPlaceholder.textContent = translations[currentLang]['select_seating'];
+            }
+            const insideOption = seatingSelect.querySelector('option[value="inside"]');
+            if (insideOption) {
+                insideOption.textContent = translations[currentLang]['inside'] || (currentLang === 'pt' ? 'Dentro' : 'Inside');
+            }
+            const outsideOption = seatingSelect.querySelector('option[value="outside"]');
+            if (outsideOption) {
+                outsideOption.textContent = translations[currentLang]['outside'] || (currentLang === 'pt' ? 'Fora' : 'Outside');
+            }
+        }
+    }
+
+
+    const lunchTimes = ["11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00"];
+    const dinnerTimes = ["18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30"];
+
+    function updateTimeOptions() {
+      const selectedDate = new Date(dateInput.value);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const isToday = selectedDate.getTime() === today.getTime();
+      const now = new Date();
+
+      timeSelect.innerHTML = `<option value="">${translations[currentLang]['select_time']}</option>`;
+      if (!dateInput.value) return;
+
+      function addOptions(labelKey, times) { // labelKey will be 'lunch' or 'dinner'
+        const group = document.createElement('optgroup');
+        group.label = translations[currentLang][labelKey]; // Use translated label
+        times.forEach(t => {
+          const [h, m] = t.split(":").map(Number);
+          const timeDate = new Date(selectedDate);
+          timeDate.setHours(h, m);
+          if (!isToday || timeDate > now) {
+            const option = document.createElement('option');
+            option.value = t;
+            option.textContent = t;
+            group.appendChild(option);
+          }
+        });
+        if (group.children.length > 0) timeSelect.appendChild(group);
+      }
+
+      addOptions("lunch", lunchTimes);
+      addOptions("dinner", dinnerTimes);
+    }
+
+    const picker = new Litepicker({
+      element: dateInput,
+      format: 'YYYY-MM-DD',
+      minDate: new Date().toISOString().split('T')[0],
+      setup: (picker) => {
+        picker.on('selected', (date) => {
+          dateInput.value = date.format('YYYY-MM-DD');
+          updateTimeOptions();
+        });
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('https://espaco-trium-backend.onrender.com/reserve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          messageDisplay.style.color = 'green';
+          // Use translated message from JS dictionary
+          messageDisplay.textContent = translations[currentLang]['reservation_confirmed'];
+          form.reset();
+          updateTimeOptions(); // Re-initialize time select
+        } else {
+          messageDisplay.style.color = 'red';
+          // Use translated error message from JS dictionary
+          messageDisplay.textContent = translations[currentLang]['something_went_wrong'];
+        }
+      } catch (err) {
+        messageDisplay.style.color = 'red';
+        // Use translated server error message
+        messageDisplay.textContent = translations[currentLang]['server_error'];
+      }
+    });
+
+
+    // --- Language Switcher Script ---
+    const langOptions = document.querySelectorAll('.lang-option');
+    const elementsToTranslate = document.querySelectorAll('[data-text-pt], [data-text-en]');
+    const htmlTag = document.querySelector('html');
+
+    function setLanguage(lang) {
+      currentLang = lang; // Update currentLang variable for dynamic JS translations
+
+      langOptions.forEach(option => {
+        if (option.dataset.lang === lang) {
+          option.classList.add('active');
+        } else {
+          option.classList.remove('active');
+        }
+      });
+
+      elementsToTranslate.forEach(element => {
+        const textKey = `data-text-${lang}`;
+        const placeholderKey = `data-text-${lang}-placeholder`; // For input placeholders
+
+        if (element.hasAttribute(textKey)) {
+          element.innerHTML = element.getAttribute(textKey);
+        }
+        // Handle placeholders for input elements
+        if (element.tagName === 'INPUT' && element.hasAttribute(placeholderKey)) {
+            element.setAttribute('placeholder', element.getAttribute(placeholderKey));
+        }
+      });
+
+      htmlTag.setAttribute('lang', lang);
+
+      // Update document title dynamically
+      const titleElement = document.querySelector('title');
+      if (titleElement) {
+        if (lang === 'pt') {
+          titleElement.textContent = titleElement.getAttribute('data-text-pt') || 'Reserva Inteligente | Espaço Trium';
+        } else if (lang === 'en') {
+          titleElement.textContent = titleElement.getAttribute('data-text-en') || 'Smart Reservation | Espaço Trium';
+        }
+      }
+
+      updateDynamicText(); // Call to update all dynamic JS-generated text
+      // updateTimeOptions(); // Re-render time options with new language for labels (already called by updateDynamicText)
+    }
+
+    langOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        setLanguage(option.dataset.lang);
+      });
+    });
+
+    // Initialize language on page load
+    setLanguage('pt'); // Ensure PT is active initially
+
+    // --- Sub-menu toggle script for "More Languages" ---
+    const submenuToggle = document.querySelector('.submenu-toggle');
+    const subMenu = document.querySelector('.sub-menu');
+
+    if (submenuToggle && subMenu) {
+      submenuToggle.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default link behavior
+        subMenu.classList.toggle('open-sub-menu');
+      });
+
+      subMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault(); // Prevent default link behavior
+          const langName = e.target.textContent;
+          const langCode = e.target.dataset.langCode;
+          alert(`You selected: ${langName} (${langCode}). \n\nNote: For this demo, full content translation to this language is not implemented. You would typically link to a specific language version of the page or use a more advanced i18n system.`);
+
+          // Optionally, close both menus after selection
+          subMenu.classList.remove('open-sub-menu');
+          menuToggle.classList.remove('open');
+          dropdownMenu.classList.remove('open');
+        });
+      });
+    }
+
+  </script>
+</body>
+</html>
