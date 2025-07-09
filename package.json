@@ -1,7 +1,6 @@
 {
   "name": "espaco-trium-server",
   "version": "1.0.0",
-  "type": "module",
   "main": "server.js",
   "engines": {
     "node": ">=18"
