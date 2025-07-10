@@ -24,7 +24,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Restaurant email
-const restaurantEmail = "forsitmedia@gmail.com";
+const restaurantEmail = "filippo.decristofaro@startlisbon.pt";
 
 // Reservation endpoint
 app.post("/reserve", async (req, res) => {
