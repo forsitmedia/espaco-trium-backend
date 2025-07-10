@@ -26,7 +26,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Restaurant email
 const restaurantEmail = "filippo.decristofaro@startlisbon.pt";
 
-// Reservation endpoint
+// Reservation endpoint here
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
