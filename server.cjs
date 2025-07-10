@@ -67,7 +67,7 @@ app.post("/reserve", async (req, res) => {
   const isPortuguese = email.endsWith(".pt") || seating === "fora";
 
   const guestEmail = {
-    from: "onboarding@resend.dev",
+    from: "noreply@forsitmedia.com",
     to: String(email).trim().toLowerCase(),
     subject: isPortuguese ? "Confirmação de Reserva" : "Reservation Confirmation",
     html: `
