@@ -26,7 +26,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Restaurant email
 const restaurantEmail = "filippo.decristofaro@startlisbon.pt";
 
-// Reservation endpoint here
+// Reservation endpoint
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
@@ -60,62 +60,64 @@ app.post("/reserve", async (req, res) => {
 
   const start = dayjs(`${date}T${time}`);
   const end = start.add(2, "hour");
+  const weekday = start.format("dddd");
+  const displayDate = `${weekday}, ${start.format("DD/MM/YYYY")} at ${start.format("HH:mm")}`;
   const formattedStart = start.format("YYYYMMDDTHHmmss");
   const formattedEnd = end.format("YYYYMMDDTHHmmss");
-  const calendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=Reservation+at+Espaco+Trium&dates=${formattedStart}/${formattedEnd}&details=Reservation+for+${guests}+people+with+${name}&location=Espaco+Trium,+Cascais`;
+
+  const googleCalendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=Reservation+at+Espaco+Trium&dates=${formattedStart}/${formattedEnd}&details=Reservation+for+${guests}+people+with+${name}&location=Espaco+Trium,+Cascais`;
+
+  const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Reservation at Espaco Trium\nDTSTART:${formattedStart}\nDTEND:${formattedEnd}\nDESCRIPTION:Reservation for ${guests} guests with ${name}\nLOCATION:Espaco Trium, Cascais\nEND:VEVENT\nEND:VCALENDAR`;
+  const icsBase64 = Buffer.from(icsData).toString("base64");
+  const icsLink = `data:text/calendar;charset=utf-8;base64,${icsBase64}`;
 
   const isPortuguese = email.endsWith(".pt") || seating === "fora";
 
   const guestEmail = {
-  from: "noreply@forsitmedia.com",
-  to: String(email).trim().toLowerCase(),
-  subject: isPortuguese ? "Detalhes da sua reserva" : "Your booking details",
-  html: `
-    <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
-      <p>${isPortuguese ? `Olá ${name},` : `Hello ${name},`}</p>
-      <p>${isPortuguese
-        ? `Recebemos sua solicitação de reserva no Espaço Trium, em Cascais.`
-        : `We’ve received your reservation request for Espaço Trium in Cascais.`}</p>
-      <p>${isPortuguese
-        ? `Aqui estão os detalhes:`
-        : `Here are the details:`}</p>
-      <ul>
-        <li>${isPortuguese ? "Data" : "Date"}: ${date}</li>
-        <li>${isPortuguese ? "Hora" : "Time"}: ${time}</li>
-        <li>${isPortuguese ? "Número de pessoas" : "Number of guests"}: ${guests}</li>
-      </ul>
-      <p>${isPortuguese ? "Endereço: Espaço Trium, Cascais." : "Location: Espaço Trium, Cascais."}</p>
-      <p>
-        ${isPortuguese ? "Adicionar ao seu calendário:" : "Add to your calendar:"}
-        <br />
-        <a href="${calendarLink}" target="_blank">${calendarLink}</a>
-      </p>
-      <p>${isPortuguese ? "Agradecemos o seu contato!" : "Thank you for booking with us!"}</p>
-    </div>
-  `,
-};
+    from: "noreply@forsitmedia.com",
+    to: String(email).trim().toLowerCase(),
+    subject: isPortuguese ? "Confirmação de Reserva" : "Reservation Confirmation",
+    html: `
+      <div style="font-family: sans-serif; font-size: 16px;">
+        <p>${isPortuguese ? `Olá ${name},` : `Hello ${name},`}</p>
+        <p>
+          ${isPortuguese
+            ? `Sua reserva foi confirmada para <strong>${guests}</strong> pessoa(s) em <strong>${displayDate}</strong>.`
+            : `Your reservation is confirmed for <strong>${guests}</strong> guest(s) on <strong>${displayDate}</strong>.`}
+        </p>
+        <p>${isPortuguese ? `Local: Espaço Trium, Cascais.` : `Location: Espaço Trium, Cascais.`}</p>
+        <p>
+          📅 <a href="${googleCalendarLink}" target="_blank" style="color:#8c4f30;">
+            ${isPortuguese ? "Adicionar ao Google Calendar" : "Add to Google Calendar"}
+          </a><br/>
+          📱 <a href="${icsLink}" download="EspacoTriumReservation.ics" style="color:#8c4f30;">
+            ${isPortuguese ? "Adicionar ao Calendário do iPhone" : "Add to iPhone Calendar"}
+          </a>
+        </p>
+        <p>${isPortuguese ? "Obrigado!" : "Thank you!"}</p>
+      </div>
+    `,
+  };
 
-const restaurantEmailContent = {
-  from: "noreply@forsitmedia.com",
-  to: restaurantEmail,
-  subject: "New booking information",
-  html: `
-    <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
-      <p>Reservation received with the following details:</p>
-      <ul>
-        <li><strong>Name:</strong> ${name}</li>
-        <li><strong>Phone:</strong> ${phone}</li>
-        <li><strong>Email:</strong> ${email}</li>
-        <li><strong>Date:</strong> ${date}</li>
-        <li><strong>Time:</strong> ${time}</li>
-        <li><strong>Guests:</strong> ${guests}</li>
-        <li><strong>Seating Preference:</strong> ${seating}</li>
-        <li><strong>Message:</strong> ${message || "None"}</li>
-      </ul>
-      <p>Calendar link: <a href="${calendarLink}" target="_blank">${calendarLink}</a></p>
-    </div>
-  `,
-};
+  const restaurantEmailContent = {
+    from: "noreply@forsitmedia.com",
+    to: restaurantEmail,
+    subject: "📥 New Reservation Received",
+    html: `
+      <div style="font-family: sans-serif; font-size: 16px;">
+        <p><strong>New Reservation</strong></p>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Time:</strong> ${time}</p>
+        <p><strong>Guests:</strong> ${guests}</p>
+        <p><strong>Seating:</strong> ${seating}</p>
+        <p><strong>Note:</strong> ${message || "None"}</p>
+        <p>📅 <a href="${googleCalendarLink}" target="_blank" style="color:#8c4f30;">Add to Calendar</a></p>
+      </div>
+    `,
+  };
 
   try {
     await resend.emails.send(guestEmail);
