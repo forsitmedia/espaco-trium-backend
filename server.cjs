@@ -90,7 +90,7 @@ app.post("/reserve", async (req, res) => {
   };
 
   const restaurantEmailContent = {
-    from: "onboarding@resend.dev",
+    from: "noreply@forsitmedia.com",
     to: restaurantEmail,
     subject: "📥 New Reservation Received",
     html: `
