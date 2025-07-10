@@ -94,7 +94,12 @@ app.post("/reserve", async (req, res) => {
           </a>
         </p>
         <p>
-          📎 <a href="https://espacotrium.com/calendar/${icsFileName}" target="_blank" style="color:#8c4f30;">
+          📎 <a href="<p>
+  📎 <a href="https://raw.githubusercontent.com/forsitmedia/espaco-trium-website/slim-push/calendar/reservation.ics" target="_blank" style="color:#8c4f30;">
+    ${isPortuguese ? "Adicionar ao Apple / Outlook Calendário" : "Add to Apple / Outlook Calendar"}
+  </a>
+</p>
+${icsFileName}" target="_blank" style="color:#8c4f30;">
             ${isPortuguese ? "Adicionar ao Calendário Apple / Outlook" : "Add to Apple / Outlook Calendar"}
           </a>
         </p>
