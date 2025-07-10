@@ -30,9 +30,8 @@ const restaurantEmail = "forsitmedia@gmail.com";
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
-    console.log("👤 Guest email from form:", email);
   console.log("📦 Full request body:", req.body);
-
+  console.log("👤 Guest email received:", email);
 
   const { data: existing, error: checkError } = await supabase
     .from("reservations")
@@ -69,7 +68,7 @@ app.post("/reserve", async (req, res) => {
 
   const guestEmail = {
     from: "onboarding@resend.dev",
-    to: email, // ← sent to user input
+    to: String(email).trim().toLowerCase(),
     subject: isPortuguese ? "Confirmação de Reserva" : "Reservation Confirmation",
     html: `
       <div style="font-family: sans-serif; font-size: 16px;">
@@ -112,7 +111,9 @@ app.post("/reserve", async (req, res) => {
 
   try {
     await resend.emails.send(guestEmail);
+    console.log("✅ Guest confirmation email sent to:", guestEmail.to);
     await resend.emails.send(restaurantEmailContent);
+    console.log("✅ Restaurant notification sent to:", restaurantEmail);
     res.json({ success: true, message: "Reservation and emails sent!" });
   } catch (emailError) {
     console.error("Email error:", emailError);
