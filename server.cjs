@@ -30,6 +30,10 @@ const restaurantEmail = "forsitmedia@gmail.com";
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
+    console.log("👤 Guest email from form:", email);
+  console.log("📦 Full request body:", req.body);
+
+
   const { data: existing, error: checkError } = await supabase
     .from("reservations")
     .select("*")
