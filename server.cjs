@@ -6,6 +6,7 @@ const { Resend } = require("resend");
 const dotenv = require("dotenv");
 const dayjs = require("dayjs");
 const path = require("path");
+const fs = require("fs");
 
 dotenv.config();
 
@@ -26,14 +27,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Restaurant email
 const restaurantEmail = "filippo.decristofaro@startlisbon.pt";
 
-// Helper to generate .ics calendar content
-function generateICS({ name, email, date, time, guests }) {
-  const start = dayjs(`${date}T${time}`);
-  const end = start.add(2, "hour");
-  return `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Espaco Trium//Reservation//EN\nBEGIN:VEVENT\nUID:${email}-${start.format("YYYYMMDDTHHmmss")}@espacotrium.com\nDTSTAMP:${dayjs().format("YYYYMMDDTHHmmss")}\nDTSTART:${start.format("YYYYMMDDTHHmmss")}\nDTEND:${end.format("YYYYMMDDTHHmmss")}\nSUMMARY:Reservation at Espaco Trium\nDESCRIPTION:Reservation for ${guests} guest(s) under ${name}.\nLOCATION:Espaço Trium, Cascais\nEND:VEVENT\nEND:VCALENDAR`;
-}
-
-// Reservation endpoint
+// Reservation endpoint here
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
@@ -69,11 +63,17 @@ app.post("/reserve", async (req, res) => {
   const end = start.add(2, "hour");
   const formattedStart = start.format("YYYYMMDDTHHmmss");
   const formattedEnd = end.format("YYYYMMDDTHHmmss");
+  const weekday = start.format("dddd");
   const calendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=Reservation+at+Espaco+Trium&dates=${formattedStart}/${formattedEnd}&details=Reservation+for+${guests}+people+with+${name}&location=Espaco+Trium,+Cascais`;
 
-  const weekday = start.format("dddd");
+  // Create .ics calendar content for Apple
+  const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Reservation at Espaco Trium\nDTSTART:${formattedStart}\nDTEND:${formattedEnd}\nLOCATION:Espaco Trium, Cascais\nDESCRIPTION:Reservation for ${guests} guest(s) with ${name}\nEND:VEVENT\nEND:VCALENDAR`;
+  const icsFileName = `reservation-${formattedStart}.ics`;
+  const icsFilePath = path.join(__dirname, "public", "calendar", icsFileName);
+  fs.mkdirSync(path.dirname(icsFilePath), { recursive: true });
+  fs.writeFileSync(icsFilePath, icsContent);
+
   const isPortuguese = email.endsWith(".pt") || seating === "fora";
-  const icsContent = generateICS({ name, email, date, time, guests });
 
   const guestEmail = {
     from: "noreply@forsitmedia.com",
@@ -84,7 +84,7 @@ app.post("/reserve", async (req, res) => {
         <p>${isPortuguese ? `Olá ${name},` : `Hello ${name},`}</p>
         <p>
           ${isPortuguese
-            ? `Sua reserva foi confirmada para <strong>${guests}</strong> pessoa(s) na <strong>${weekday}</strong>, <strong>${date}</strong> às <strong>${time}</strong>.`
+            ? `Sua reserva foi confirmada para <strong>${guests}</strong> pessoa(s) na <strong>${weekday}</strong>, dia <strong>${date}</strong> às <strong>${time}</strong>.`
             : `Your reservation is confirmed for <strong>${guests}</strong> guest(s) on <strong>${weekday}</strong>, <strong>${date}</strong> at <strong>${time}</strong>.`}
         </p>
         <p>${isPortuguese ? `Local: Espaço Trium, Cascais.` : `Location: Espaço Trium, Cascais.`}</p>
@@ -93,16 +93,14 @@ app.post("/reserve", async (req, res) => {
             ${isPortuguese ? "Adicionar ao Google Calendar" : "Add to Google Calendar"}
           </a>
         </p>
-        <p>${isPortuguese ? "Em anexo encontrará um ficheiro para adicionar ao seu calendário." : "You’ll find a calendar file attached to add to your iPhone or calendar app."}</p>
+        <p>
+          📎 <a href="https://espacotrium.com/calendar/${icsFileName}" target="_blank" style="color:#8c4f30;">
+            ${isPortuguese ? "Adicionar ao Calendário Apple / Outlook" : "Add to Apple / Outlook Calendar"}
+          </a>
+        </p>
         <p>${isPortuguese ? "Obrigado!" : "Thank you!"}</p>
       </div>
     `,
-    attachments: [
-      {
-        filename: "reservation.ics",
-        content: icsContent,
-      },
-    ],
   };
 
   const restaurantEmailContent = {
@@ -115,7 +113,7 @@ app.post("/reserve", async (req, res) => {
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Phone:</strong> ${phone}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Date:</strong> ${date} (${weekday})</p>
+        <p><strong>Date:</strong> ${date}</p>
         <p><strong>Time:</strong> ${time}</p>
         <p><strong>Guests:</strong> ${guests}</p>
         <p><strong>Seating:</strong> ${seating}</p>
@@ -123,12 +121,6 @@ app.post("/reserve", async (req, res) => {
         <p>📅 <a href="${calendarLink}" target="_blank" style="color:#8c4f30;">Add to Calendar</a></p>
       </div>
     `,
-    attachments: [
-      {
-        filename: "reservation.ics",
-        content: icsContent,
-      },
-    ],
   };
 
   try {
