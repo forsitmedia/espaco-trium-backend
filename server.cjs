@@ -76,27 +76,27 @@ app.post("/reserve", async (req, res) => {
   const isPortuguese = email.endsWith(".pt") || seating === "fora";
 
   const guestEmail = {
-    from: "noreply@forsitmedia.com",
-    to: String(email).trim().toLowerCase(),
-    subject: isPortuguese ? "Confirmação de Reserva" : "Reservation Confirmation",
-    html: `
-      <div style="font-family: sans-serif; font-size: 16px;">
-        <p>${isPortuguese ? `Olá ${name},` : `Hello ${name},`}</p>
-        <p>
-          ${isPortuguese
-            ? `Sua reserva foi confirmada para <strong>${guests}</strong> pessoa(s) na <strong>${weekday}</strong>, dia <strong>${date}</strong> às <strong>${time}</strong>.`
-            : `Your reservation is confirmed for <strong>${guests}</strong> guest(s) on <strong>${weekday}</strong>, <strong>${date}</strong> at <strong>${time}</strong>.`}
-        </p>
-        <p>${isPortuguese ? `Local: Espaço Trium, Cascais.` : `Location: Espaço Trium, Cascais.`}</p>
-        <p>
-          📅 <a href="${calendarLink}" target="_blank" style="color:#8c4f30;">
-            ${isPortuguese ? "Adicionar ao Google Calendar" : "Add to Google Calendar"}
-          </a>
-        </p>
+  from: "noreply@forsitmedia.com",
+  to: String(email).trim().toLowerCase(),
+  subject: isPortuguese ? "Confirmação de Reserva" : "Reservation Confirmation",
+  html: `
+    <div style="font-family: sans-serif; font-size: 16px;">
+      <p>${isPortuguese ? `Olá ${name},` : `Hello ${name},`}</p>
       <p>
-      </div>
-    `,
-  };
+        ${isPortuguese
+          ? `Sua reserva foi confirmada para <strong>${guests}</strong> pessoa(s) na <strong>${weekday}</strong>, dia <strong>${date}</strong> às <strong>${time}</strong>.`
+          : `Your reservation is confirmed for <strong>${guests}</strong> guest(s) on <strong>${weekday}</strong>, <strong>${date}</strong> at <strong>${time}</strong>.`}
+      </p>
+      <p>${isPortuguese ? `Local: Espaço Trium, Cascais.` : `Location: Espaço Trium, Cascais.`}</p>
+      <p>
+        📅 <a href="${calendarLink}" target="_blank" style="color:#8c4f30;">
+          ${isPortuguese ? "Adicionar ao Google Calendar" : "Add to Google Calendar"}
+        </a>
+      </p>
+      <p>${isPortuguese ? "Obrigado!" : "Thank you!"}</p>
+    </div>
+  `,
+};
 
   const restaurantEmailContent = {
     from: "noreply@forsitmedia.com",
