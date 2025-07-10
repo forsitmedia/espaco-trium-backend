@@ -27,7 +27,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Restaurant email
 const restaurantEmail = "filippo.decristofaro@startlisbon.pt";
 
-// Reservation endpoint here
+// Reservation endpoint
 app.post("/reserve", async (req, res) => {
   const { name, email, phone, date, time, guests, seating, message } = req.body;
 
@@ -69,8 +69,7 @@ app.post("/reserve", async (req, res) => {
   // Create .ics calendar content for Apple
   const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Reservation at Espaco Trium\nDTSTART:${formattedStart}\nDTEND:${formattedEnd}\nLOCATION:Espaco Trium, Cascais\nDESCRIPTION:Reservation for ${guests} guest(s) with ${name}\nEND:VEVENT\nEND:VCALENDAR`;
   const icsFileName = `reservation-${formattedStart}.ics`;
-  const icsFilePath = path.join(__dirname, "public", "calendar", icsFileName);
-  fs.mkdirSync(path.dirname(icsFilePath), { recursive: true });
+  const icsFilePath = path.join(__dirname, icsFileName);
   fs.writeFileSync(icsFilePath, icsContent);
 
   const isPortuguese = email.endsWith(".pt") || seating === "fora";
@@ -93,14 +92,15 @@ app.post("/reserve", async (req, res) => {
             ${isPortuguese ? "Adicionar ao Google Calendar" : "Add to Google Calendar"}
           </a>
         </p>
-      <p>
-  📎 <a href="https://raw.githubusercontent.com/forsitmedia/espaco-trium-website/slim-push/calendar/reservation.ics" target="_blank" style="color:#8c4f30;">
-  ${isPortuguese ? "Adicionar ao Apple / Outlook Calendário" : "Add to Apple / Outlook Calendar"}
-</a>
-</p>
-  <p>${isPortuguese ? "Obrigado!" : "Thank you!"}</p>
+        <p>${isPortuguese ? "Obrigado!" : "Thank you!"}</p>
       </div>
     `,
+    attachments: [
+      {
+        filename: icsFileName,
+        content: icsContent,
+      },
+    ],
   };
 
   const restaurantEmailContent = {
