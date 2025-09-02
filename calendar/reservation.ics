@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Espaco Trium//Reservation Calendar//EN
+BEGIN:VEVENT
+UID:reservation-1234@espacotrium.com
+DTSTAMP:20250710T120000Z
+DTSTART:20250715T190000Z
+DTEND:20250715T210000Z
+SUMMARY:Reservation at Espaço Trium
+DESCRIPTION:Your reservation at Espaço Trium in Cascais
+LOCATION:Espaço Trium, Cascais
+END:VEVENT
+END:VCALENDAR
